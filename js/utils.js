@@ -172,15 +172,15 @@ function buildPagination(container, page, totalPages, onChange) {
 /* ── Confirmation dialog ─────────────────────── */
 function confirmAction(message) {
     return new Promise(resolve => {
-        const msgEl = $('#confirm-message');
+        const msgEl = $('#confirmMessage');
         if (msgEl) msgEl.textContent = message;
-        openModal('confirm-modal');
-        const yes = $('#confirm-yes');
-        const no = $('#confirm-no');
-        const handler = (result) => { closeModal('confirm-modal'); yes.removeEventListener('click', yFn); no.removeEventListener('click', nFn); resolve(result); };
+        openModal('confirmModal');
+        const yes = $('#confirmAction');
+        const no = $('#cancelConfirm');
+        const handler = (result) => { closeModal('confirmModal'); if (yes) yes.removeEventListener('click', yFn); if (no) no.removeEventListener('click', nFn); resolve(result); };
         const yFn = () => handler(true);
         const nFn = () => handler(false);
-        yes.addEventListener('click', yFn);
-        no.addEventListener('click', nFn);
+        if (yes) yes.addEventListener('click', yFn);
+        if (no) no.addEventListener('click', nFn);
     });
 }

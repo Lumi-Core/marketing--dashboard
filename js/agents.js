@@ -9,7 +9,8 @@ const Agents = {
     bindEvents() {
         const pg = $('#page-agents');
         if (!pg) return;
-        on(pg, 'click', '.btn-refresh-agents', () => this.loadAll());
+        const refreshBtn = $('#refreshAgentsBtn');
+        if (refreshBtn) refreshBtn.addEventListener('click', () => this.loadAll());
     },
 
     onPageActive() {
@@ -26,7 +27,7 @@ const Agents = {
     },
 
     async loadHeartbeats() {
-        const container = $('#heartbeats-grid');
+        const container = $('#agentHeartbeats');
         if (!container) return;
         try {
             const result = await api.getAgentHeartbeats();
@@ -53,7 +54,7 @@ const Agents = {
     },
 
     async loadRuns() {
-        const tbody = $('#agent-runs-body');
+        const tbody = $('#agentRunsBody');
         if (!tbody) return;
         try {
             const result = await api.getAgentRuns();

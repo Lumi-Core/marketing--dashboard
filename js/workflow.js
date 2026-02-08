@@ -10,12 +10,15 @@ const Workflow = {
         const pg = $('#page-workflow');
         if (!pg) return;
 
-        // Trigger btn
-        on(pg, 'click', '#trigger-campaign-btn', () => this.triggerCampaign());
+        // Trigger form submit
+        const form = $('#workflowForm');
+        if (form) form.addEventListener('submit', e => { e.preventDefault(); this.triggerCampaign(); });
 
-        // Refresh buttons
-        on(pg, 'click', '.btn-refresh-running', () => this.loadRunning());
-        on(pg, 'click', '.btn-refresh-history', () => this.loadHistory());
+        // Refresh buttons (by ID since HTML uses IDs)
+        const refreshRunning = $('#refreshRunningBtn');
+        if (refreshRunning) refreshRunning.addEventListener('click', () => this.loadRunning());
+        const refreshHistory = $('#refreshHistoryBtn');
+        if (refreshHistory) refreshHistory.addEventListener('click', () => this.loadHistory());
     },
 
     onPageActive() {
@@ -30,14 +33,14 @@ const Workflow = {
     },
 
     async triggerCampaign() {
-        const form = $('#trigger-form');
+        const form = $('#workflowForm');
         if (!form) return;
         const data = getFormData(form);
         try {
             showLoading('Triggering campaign workflow…');
             const result = await api.triggerCampaign(data);
-            showToast(`Workflow started — Run ID: ${result.run_id || '—'}`, 'success');
-            if (result.run_id) this.pollStatus(result.run_id);
+            showToast(`Workflow started — ID: ${result.campaign_id || '—'}`, 'success');
+            if (result.campaign_id) this.pollStatus(result.campaign_id);
             this.loadRunning();
         } catch (e) { showToast('Trigger failed: ' + e.message, 'error'); }
         finally { hideLoading(); }
@@ -50,7 +53,7 @@ const Workflow = {
                 const status = await api.getTriggerStatus(runId);
                 if (status.status === 'completed' || status.status === 'failed' || status.status === 'error') {
                     clearInterval(timer);
-                    showToast(`Run ${runId}: ${status.status}`, status.status === 'completed' ? 'success' : 'error');
+                    showToast(`Run ${runId.slice(0,8)}: ${status.status}`, status.status === 'completed' ? 'success' : 'error');
                     this.loadRunning();
                     this.loadHistory();
                 }
@@ -60,11 +63,14 @@ const Workflow = {
     },
 
     async loadRunning() {
-        const container = $('#running-workflows');
+        const container = $('#runningWorkflows');
         if (!container) return;
         try {
             const result = await api.getRunningCampaigns();
-            const runs = Array.isArray(result) ? result : (result.running || []);
+            const campaigns = result.campaigns || {};
+            const runs = typeof campaigns === 'object' && !Array.isArray(campaigns)
+                ? Object.values(campaigns)
+                : (Array.isArray(campaigns) ? campaigns : []);
             if (!runs.length) {
                 container.innerHTML = '<div class="empty-state"><i class="fas fa-check-circle"></i><p>No running workflows</p></div>';
                 return;
@@ -72,40 +78,43 @@ const Workflow = {
             container.innerHTML = runs.map(r => `
                 <div class="workflow-card">
                     <div class="workflow-card-header">
-                        <strong>${escapeHtml(r.campaign_name || r.name || 'Workflow')}</strong>
+                        <strong>${escapeHtml(r.campaign_name || r.campaign_id || 'Workflow')}</strong>
                         ${statusBadge(r.status || 'running')}
                     </div>
                     <div class="workflow-card-meta">
-                        <span><i class="fas fa-clock"></i> Started ${timeAgo(r.started_at || r.created_at)}</span>
-                        ${r.current_node ? `<span><i class="fas fa-cog fa-spin"></i> ${escapeHtml(r.current_node)}</span>` : ''}
+                        <span><i class="fas fa-clock"></i> Started ${timeAgo(r.started_at)}</span>
                     </div>
                 </div>
             `).join('');
         } catch (e) {
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Failed to load</p></div>`;
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Failed to load</p></div>';
         }
     },
 
     async loadHistory() {
-        const tbody = $('#workflow-history-body');
+        const tbody = $('#workflowHistoryBody');
         if (!tbody) return;
         try {
             const result = await api.getCampaignHistory(30);
-            const runs = Array.isArray(result) ? result : (result.history || []);
+            const campaigns = result.campaigns || {};
+            const runs = typeof campaigns === 'object' && !Array.isArray(campaigns)
+                ? Object.values(campaigns)
+                : (Array.isArray(campaigns) ? campaigns : []);
             if (!runs.length) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><p>No history yet</p></td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><p>No history yet</p></td></tr>';
                 return;
             }
             tbody.innerHTML = runs.map(r => `<tr>
-                <td>${r.run_id || r.id || '—'}</td>
-                <td>${escapeHtml(r.campaign_name || '—')}</td>
+                <td>${escapeHtml((r.campaign_id || '—').toString().slice(0,8))}</td>
                 <td>${statusBadge(r.status)}</td>
-                <td>${formatDate(r.started_at || r.created_at)}</td>
-                <td>${r.duration ? r.duration + 's' : '—'}</td>
-                <td>${escapeHtml(truncate(r.error || r.result || '—', 50))}</td>
+                <td>${formatDate(r.started_at)}</td>
+                <td>${formatDate(r.completed_at)}</td>
+                <td>
+                    ${r.error ? `<span class="text-danger">${escapeHtml(r.error.toString().slice(0,50))}</span>` : '—'}
+                </td>
             </tr>`).join('');
         } catch (e) {
-            tbody.innerHTML = '<tr><td colspan="6">Failed to load history</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5">Failed to load history</td></tr>';
         }
     },
 };

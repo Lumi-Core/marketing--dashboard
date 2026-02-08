@@ -10,11 +10,11 @@ const Reports = {
         const pg = $('#page-reports');
         if (!pg) return;
 
-        const search = pg.querySelector('.search-input');
-        if (search) search.addEventListener('input', debounce(e => this.loadReports(e.target.value), 400));
+        const refreshBtn = $('#refreshReports');
+        if (refreshBtn) refreshBtn.addEventListener('click', () => this.loadReports());
 
-        on(pg, 'click', '.btn-export-reports', () => this.exportCSV());
-        on(pg, 'click', '.btn-refresh-reports', () => this.loadReports());
+        const exportBtn = $('#exportReportsCSV');
+        if (exportBtn) exportBtn.addEventListener('click', () => this.exportCSV());
     },
 
     onPageActive() { this.loadReports(); },
@@ -30,20 +30,19 @@ const Reports = {
     },
 
     renderTable() {
-        const tbody = $('#reports-table-body');
+        const tbody = $('#reportsTableBody');
         if (!tbody) return;
         if (!this.data.length) {
-            tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-chart-bar"></i><p>No reports available</p></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-chart-bar"></i><p>No reports available</p></td></tr>';
             return;
         }
         tbody.innerHTML = this.data.map(r => `<tr>
             <td>${r.id || '—'}</td>
             <td><strong>${escapeHtml(r.campaign_name || '—')}</strong></td>
-            <td>${formatNumber(r.total_sent ?? r.messages_sent)}</td>
-            <td>${formatNumber(r.delivered)}</td>
-            <td>${formatNumber(r.failed)}</td>
-            <td>${formatPercent(r.delivery_rate)}</td>
-            <td>${statusBadge(r.status || 'completed')}</td>
+            <td>${escapeHtml(r.target_audience || r.audience_type || '—')}</td>
+            <td>${formatNumber(r.total_sent ?? r.successful_sends + r.failed_sends ?? 0)}</td>
+            <td>${formatNumber(r.successful_sends ?? r.delivered ?? 0)}</td>
+            <td>${formatNumber(r.failed_sends ?? r.failed ?? 0)}</td>
             <td>${formatDate(r.created_at)}</td>
         </tr>`).join('');
     },

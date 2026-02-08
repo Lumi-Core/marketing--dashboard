@@ -48,10 +48,10 @@ const Dashboard = {
         const grid = $('#dashboard-stats');
         if (!grid) return;
         const stats = [
-            { label: 'Total Clients', value: formatNumber(data.total_clients ?? 0), icon: 'users', cls: 'primary' },
+            { label: 'Total Clients', value: formatNumber(data.total_active_clients ?? data.total_clients ?? 0), icon: 'users', cls: 'primary' },
             { label: 'Active Campaigns', value: formatNumber(data.active_campaigns ?? 0), icon: 'bullhorn', cls: 'success' },
             { label: 'Pending Approval', value: formatNumber(data.pending_approvals ?? 0), icon: 'clock', cls: 'warning' },
-            { label: 'Messages Sent', value: formatNumber(data.messages_sent ?? 0), icon: 'paper-plane', cls: 'info' },
+            { label: 'Messages Sent', value: formatNumber(data.total_sent ?? data.messages_sent ?? 0), icon: 'paper-plane', cls: 'info' },
         ];
         grid.innerHTML = stats.map(s => `
             <div class="stat-card">

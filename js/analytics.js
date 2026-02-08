@@ -345,7 +345,7 @@ const Analytics = {
                 <div class="timeline-content">
                     <div class="timeline-title">${escapeHtml(a.title || 'Activity')}</div>
                     <div class="timeline-detail">${escapeHtml(a.detail || '')}</div>
-                    <div class="timeline-time">${formatDateTime(a.timestamp)}</div>
+                    <div class="timeline-time">${formatDate(a.timestamp)}</div>
                 </div>
             </div>`;
         });

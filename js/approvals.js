@@ -12,7 +12,8 @@ const Approvals = {
 
         on(pg, 'click', '.btn-approve', (e, btn) => this.approve(Number(btn.dataset.id)));
         on(pg, 'click', '.btn-reject', (e, btn) => this.reject(Number(btn.dataset.id)));
-        on(pg, 'click', '.btn-refresh-approvals', () => this.loadApprovals());
+        const refreshBtn = $('#refreshApprovals');
+        if (refreshBtn) refreshBtn.addEventListener('click', () => this.loadApprovals());
     },
 
     onPageActive() { this.loadApprovals(); },
@@ -28,7 +29,7 @@ const Approvals = {
     },
 
     render() {
-        const container = $('#approvals-grid');
+        const container = $('#approvalsGrid');
         if (!container) return;
         if (!this.data.length) {
             container.innerHTML = '<div class="empty-state"><i class="fas fa-check-double"></i><h3>All Caught Up</h3><p>No pending approvals</p></div>';

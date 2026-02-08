@@ -11,11 +11,11 @@ const Audit = {
         const pg = $('#page-audit');
         if (!pg) return;
 
-        const filter = pg.querySelector('.filter-select');
+        const filter = $('#auditEntityFilter');
         if (filter) filter.addEventListener('change', e => { this.entityFilter = e.target.value; this.loadAudit(); });
 
-        on(pg, 'click', '.btn-refresh-audit', () => this.loadAudit());
-        on(pg, 'click', '.btn-export-audit', () => this.exportCSV());
+        const refreshBtn = $('#refreshAudit');
+        if (refreshBtn) refreshBtn.addEventListener('click', () => this.loadAudit());
     },
 
     onPageActive() { this.loadAudit(); },
@@ -34,19 +34,20 @@ const Audit = {
     },
 
     renderTable() {
-        const tbody = $('#audit-table-body');
+        const tbody = $('#auditTableBody');
         if (!tbody) return;
         if (!this.data.length) {
             tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-scroll"></i><p>No audit entries</p></td></tr>';
             return;
         }
+        // Column order: Timestamp, Entity, Entity ID, Action, Actor, Details
         tbody.innerHTML = this.data.map(a => `<tr>
             <td>${formatDate(a.created_at || a.timestamp)}</td>
-            <td><span class="badge badge-${this.actionColor(a.action)}">${escapeHtml(a.action || '—')}</span></td>
             <td>${escapeHtml(a.entity_type || '—')}</td>
             <td>${a.entity_id || '—'}</td>
-            <td>${escapeHtml(truncate(a.details || a.description || '—', 80))}</td>
+            <td><span class="badge badge-${this.actionColor(a.action)}">${escapeHtml(a.action || '—')}</span></td>
             <td>${escapeHtml(a.user || a.actor || 'system')}</td>
+            <td>${escapeHtml(truncate(a.details || a.description || '—', 80))}</td>
         </tr>`).join('');
     },
 
