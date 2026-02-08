@@ -21,7 +21,7 @@ const Approvals = {
     async loadApprovals() {
         try {
             const result = await api.getPendingApprovals();
-            this.data = Array.isArray(result) ? result : (result.pending || []);
+            this.data = Array.isArray(result) ? result : (result.campaigns || result.pending || []);
             this.render();
         } catch (e) {
             showToast('Failed to load approvals: ' + e.message, 'error');
