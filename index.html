@@ -56,6 +56,9 @@
                 <li class="nav-item" data-page="audit">
                     <a href="#audit"><i class="fas fa-history"></i><span>Audit Log</span></a>
                 </li>
+                <li class="nav-item" data-page="companies">
+                    <a href="#companies"><i class="fas fa-building"></i><span>Companies</span></a>
+                </li>
                 <li class="nav-item" data-page="settings">
                     <a href="#settings"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
                 </li>
@@ -84,6 +87,11 @@
                 </div>
             </div>
             <div class="header-right">
+                <div class="company-selector-wrap">
+                    <select id="companySelector" class="company-selector" title="Select Company">
+                        <option value="">All Companies</option>
+                    </select>
+                </div>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search..." id="globalSearch">
@@ -597,11 +605,156 @@
                 </div>
             </section>
 
+            <!-- ============ COMPANIES ============ -->
+            <section class="page hidden" id="page-companies">
+                <div class="page-header">
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="addCompanyBtn"><i class="fas fa-plus"></i> Add Company</button>
+                        <button class="btn btn-sm" id="refreshCompaniesBtn"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="search-inline">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="companySearch" placeholder="Search companies..." class="form-control">
+                    </div>
+                    <select id="companyStatusFilter" class="form-control">
+                        <option value="">All</option>
+                        <option value="active">Active Only</option>
+                        <option value="inactive">Inactive Only</option>
+                    </select>
+                </div>
+
+                <!-- Company summary cards -->
+                <div class="stats-grid" id="companyStats">
+                    <div class="stat-card"><div class="stat-icon green"><i class="fas fa-building"></i></div><div class="stat-info"><h3 id="stat-total-companies">0</h3><p>Total Companies</p></div></div>
+                    <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3 id="stat-active-companies">0</h3><p>Active</p></div></div>
+                    <div class="stat-card"><div class="stat-icon orange"><i class="fab fa-whatsapp"></i></div><div class="stat-info"><h3 id="stat-wa-configured">0</h3><p>WA Configured</p></div></div>
+                    <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-star"></i></div><div class="stat-info"><h3 id="stat-default-company">—</h3><p>Default Company</p></div></div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header"><h3><i class="fas fa-building" style="margin-right:8px"></i>Companies</h3></div>
+                    <div class="table-container">
+                        <table class="data-table" id="companiesTable">
+                            <thead><tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Slug</th>
+                                <th>Location</th>
+                                <th>Tel / Mobile</th>
+                                <th>WA Phone ID</th>
+                                <th>Template</th>
+                                <th>Approval</th>
+                                <th>Active</th>
+                                <th>Default</th>
+                                <th>Actions</th>
+                            </tr></thead>
+                            <tbody id="companiesBody"><tr><td colspan="11">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer">
+                        <span class="showing-info" id="companiesShowingInfo">Showing 0 companies</span>
+                    </div>
+                </div>
+
+                <!-- Per-company detail cards (expandable) -->
+                <div class="card mt-4 hidden" id="companyDetailCard">
+                    <div class="card-header">
+                        <h3><i class="fas fa-id-card" style="margin-right:8px"></i>Company Details — <span id="detailCompanyName"></span></h3>
+                        <button class="btn btn-sm" id="closeCompanyDetail"><i class="fas fa-times"></i> Close</button>
+                    </div>
+                    <div id="companyDetailBody" class="settings-info-grid"></div>
+                </div>
+            </section>
+
+            <!-- Company Modal (full fields) -->
+            <div class="modal" id="companyModal">
+                <div class="modal-overlay"></div>
+                <div class="modal-content modal-lg">
+                    <div class="modal-header"><h3 id="companyModalTitle">Add Company</h3><button class="modal-close">&times;</button></div>
+                    <form id="companyForm">
+                        <div class="modal-body" style="max-height:70vh;overflow-y:auto">
+                            <!-- Basic Info -->
+                            <h4 class="modal-section-title"><i class="fas fa-info-circle"></i> Basic Information</h4>
+                            <div class="form-row">
+                                <div class="form-group"><label>Company Name *</label><input type="text" id="cmpName" class="form-control" required placeholder="e.g. Ideal Home UAE"></div>
+                                <div class="form-group"><label>Slug * <small>(unique, lowercase)</small></label><input type="text" id="cmpSlug" class="form-control" required placeholder="e.g. ideal-home"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Location</label><input type="text" id="cmpLocation" class="form-control" placeholder="e.g. Dubai, UAE"></div>
+                                <div class="form-group"><label>Website</label><input type="url" id="cmpWebsite" class="form-control" placeholder="https://"></div>
+                            </div>
+                            <div class="form-group"><label>Description</label><textarea id="cmpDescription" class="form-control" rows="2" placeholder="Brief company description..."></textarea></div>
+                            <div class="form-group"><label>Logo URL</label><input type="url" id="cmpLogoUrl" class="form-control" placeholder="https://...logo.png"></div>
+
+                            <!-- Contact Info -->
+                            <h4 class="modal-section-title"><i class="fas fa-phone-alt"></i> Contact Information</h4>
+                            <div class="form-row">
+                                <div class="form-group"><label>Tel</label><input type="text" id="cmpTel" class="form-control" placeholder="+971 (0)264 25445"></div>
+                                <div class="form-group"><label>Mobile 1</label><input type="text" id="cmpMobile1" class="form-control" placeholder="+971 50 312 2300"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Mobile 2</label><input type="text" id="cmpMobile2" class="form-control" placeholder="+971 50 138 8555"></div>
+                                <div class="form-group"><label>Instagram</label><input type="text" id="cmpInstagram" class="form-control" placeholder="@handle"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Email (Info)</label><input type="email" id="cmpEmailInfo" class="form-control" placeholder="info@company.com"></div>
+                                <div class="form-group"><label>Email (Sales)</label><input type="email" id="cmpEmailSales" class="form-control" placeholder="sales@company.com"></div>
+                            </div>
+
+                            <!-- WhatsApp Business API -->
+                            <h4 class="modal-section-title"><i class="fab fa-whatsapp"></i> WhatsApp Business API</h4>
+                            <div class="form-row">
+                                <div class="form-group"><label>Phone Number ID *</label><input type="text" id="cmpWaPhoneId" class="form-control" placeholder="908612402338206"></div>
+                                <div class="form-group"><label>Access Token *</label><input type="password" id="cmpWaToken" class="form-control" placeholder="EAANq0z..."><button type="button" class="btn-toggle-pass" title="Show/Hide"><i class="fas fa-eye"></i></button></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Business Account ID</label><input type="text" id="cmpWaBusinessId" class="form-control" placeholder="846443911485915"></div>
+                                <div class="form-group"><label>API Version</label><input type="text" id="cmpWaVersion" class="form-control" value="v18.0"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Template Name</label><input type="text" id="cmpWaTemplate" class="form-control" value="ideal_home_final_v1"></div>
+                            </div>
+
+                            <!-- Approval & AI -->
+                            <h4 class="modal-section-title"><i class="fas fa-check-double"></i> Approval & AI</h4>
+                            <div class="form-row">
+                                <div class="form-group"><label>Approval Email</label><input type="email" id="cmpApprovalEmail" class="form-control" placeholder="admin@company.com"></div>
+                                <div class="form-group">
+                                    <label>Approval Method</label>
+                                    <select id="cmpApprovalMethod" class="form-control">
+                                        <option value="both">Both (Email + Dashboard)</option>
+                                        <option value="email">Email Only</option>
+                                        <option value="dashboard">Dashboard Only</option>
+                                        <option value="auto">Auto-Approve</option>
+                                        <option value="none">None</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group"><label>RAG Webhook URL</label><input type="url" id="cmpRagUrl" class="form-control" placeholder="https://automation.example.com/webhook/..."></div>
+
+                            <!-- Status -->
+                            <h4 class="modal-section-title"><i class="fas fa-toggle-on"></i> Status</h4>
+                            <div class="form-row">
+                                <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="cmpActive" checked> Active</label></div>
+                                <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="cmpDefault"> Default Company</label></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-cancel-modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="saveCompanyBtn"><i class="fas fa-save"></i> Save Company</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <!-- ============ SETTINGS ============ -->
             <section class="page hidden" id="page-settings">
                 <div class="settings-grid">
                     <div class="card">
-                        <div class="card-header"><h3>API Configuration</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-plug" style="margin-right:8px"></i>API Configuration</h3></div>
                         <div class="settings-form">
                             <div class="form-group">
                                 <label>API Base URL</label>
@@ -612,16 +765,46 @@
                                 <label>API Key (optional)</label>
                                 <input type="password" id="apiKey" class="form-control" placeholder="Enter API key">
                             </div>
-                            <button class="btn btn-primary" id="saveApiSettings"><i class="fas fa-save"></i> Save Settings</button>
+                            <div class="form-actions">
+                                <button class="btn btn-primary" id="saveApiSettings"><i class="fas fa-save"></i> Save Settings</button>
+                                <button class="btn btn-secondary" id="testConnectionBtn"><i class="fas fa-plug"></i> Test Connection</button>
+                            </div>
+                            <div id="connectionStatus" class="mt-2" style="font-size:13px"></div>
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card-header"><h3>System Information</h3><button class="btn btn-sm" id="refreshSysInfo"><i class="fas fa-sync-alt"></i></button></div>
+                        <div class="card-header"><h3><i class="fas fa-server" style="margin-right:8px"></i>System Information</h3><button class="btn btn-sm" id="refreshSysInfo"><i class="fas fa-sync-alt"></i></button></div>
                         <div class="system-info" id="systemInfo"></div>
                     </div>
                     <div class="card">
-                        <div class="card-header"><h3>Health Checks</h3><button class="btn btn-sm" id="refreshReadiness"><i class="fas fa-sync-alt"></i></button></div>
+                        <div class="card-header"><h3><i class="fas fa-clipboard-check" style="margin-right:8px"></i>Health Checks</h3><button class="btn btn-sm" id="refreshReadiness"><i class="fas fa-sync-alt"></i></button></div>
                         <div id="readinessInfo" class="system-info"></div>
+                    </div>
+                </div>
+
+                <!-- Company Management Section inside Settings -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3><i class="fas fa-building" style="margin-right:8px"></i>Company Management</h3>
+                        <div>
+                            <button class="btn btn-primary btn-sm" id="settingsAddCompanyBtn"><i class="fas fa-plus"></i> Add Company</button>
+                            <button class="btn btn-sm" id="settingsRefreshCompaniesBtn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                    </div>
+                    <p style="padding:0 20px;color:var(--gray-500);font-size:13px">Manage companies, WhatsApp senders, templates and approval configuration for multi-tenant campaigns.</p>
+                    <div class="table-container">
+                        <table class="data-table" id="settingsCompaniesTable">
+                            <thead><tr>
+                                <th>Company</th>
+                                <th>Location</th>
+                                <th>WA Phone ID</th>
+                                <th>Template</th>
+                                <th>Approval</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr></thead>
+                            <tbody id="settingsCompaniesBody"><tr><td colspan="7">Loading...</td></tr></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -845,6 +1028,7 @@
     <script src="js/agents.js"></script>
     <script src="js/reports.js"></script>
     <script src="js/audit.js"></script>
+    <script src="js/companies.js"></script>
     <script src="js/settings.js"></script>
     <script src="js/app.js"></script>
 </body>

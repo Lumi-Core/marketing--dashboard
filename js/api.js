@@ -5,10 +5,21 @@ class ApiService {
     constructor() {
         this.baseUrl = localStorage.getItem('mktApiBaseUrl') || 'http://localhost:8000';
         this.apiKey = localStorage.getItem('mktApiKey') || '';
+        this._companyId = localStorage.getItem('mktCompanyId') || '';
     }
 
     setBaseUrl(url) { this.baseUrl = url.replace(/\/$/, ''); localStorage.setItem('mktApiBaseUrl', this.baseUrl); }
     setApiKey(key) { this.apiKey = key; localStorage.setItem('mktApiKey', this.apiKey); }
+
+    /** Get/set the active company filter */
+    get companyId() { return this._companyId; }
+    set companyId(id) { this._companyId = id || ''; localStorage.setItem('mktCompanyId', this._companyId); }
+
+    /** Append company_id param to a query-string-safe map */
+    _injectCompany(params = {}) {
+        if (this._companyId) params.company_id = this._companyId;
+        return params;
+    }
 
     getHeaders() {
         const h = { 'Content-Type': 'application/json' };
@@ -76,10 +87,10 @@ class ApiService {
     getMetrics()     { return this.get('/health/metrics'); }
 
     // ── Dashboard ───────────────────────────────
-    getDashboard()   { return this.get('/api/dashboard'); }
+    getDashboard()   { const q = this._companyId ? `?company_id=${this._companyId}` : ''; return this.get(`/api/dashboard${q}`); }
 
     // ── Clients ─────────────────────────────────
-    getClients(params = {})         { const q = new URLSearchParams(params).toString(); return this.get(`/api/clients${q ? '?'+q : ''}`); }
+    getClients(params = {})         { const q = new URLSearchParams(this._injectCompany(params)).toString(); return this.get(`/api/clients${q ? '?'+q : ''}`); }
     getClient(id)                   { return this.get(`/api/clients/${id}`); }
     createClient(data)              { return this.post('/api/clients', data); }
     updateClient(id, data)          { return this.put(`/api/clients/${id}`, data); }
@@ -89,7 +100,7 @@ class ApiService {
     importClientsXlsx(file)         { return this.uploadFile('/api/clients/import/xlsx', file); }
 
     // ── Campaigns ───────────────────────────────
-    getCampaigns(params = {})       { const q = new URLSearchParams(params).toString(); return this.get(`/api/campaigns${q ? '?'+q : ''}`); }
+    getCampaigns(params = {})       { const q = new URLSearchParams(this._injectCompany(params)).toString(); return this.get(`/api/campaigns${q ? '?'+q : ''}`); }
     getActiveCampaigns()            { return this.get('/api/campaigns/active'); }
     getCampaign(id)                 { return this.get(`/api/campaigns/${id}`); }
     createCampaign(data)            { return this.post('/api/campaigns', data); }
@@ -108,7 +119,7 @@ class ApiService {
     getCampaignHistory(limit = 20)  { return this.get(`/api/campaigns/history?limit=${limit}`); }
 
     // ── Reports ─────────────────────────────────
-    getReports(campaignName)        { const q = campaignName ? `?campaign_name=${encodeURIComponent(campaignName)}` : ''; return this.get(`/api/reports${q}`); }
+    getReports(campaignName)        { const p = this._injectCompany({}); if(campaignName) p.campaign_name=campaignName; const q = new URLSearchParams(p).toString(); return this.get(`/api/reports${q ? '?'+q : ''}`); }
 
     // ── AI Analytics & Insights ─────────────────
     getAnalyticsOverview()          { return this.get('/api/analytics/overview'); }
@@ -141,6 +152,14 @@ class ApiService {
 
     // ── Audit ───────────────────────────────────
     getAuditLog(params = {})        { const q = new URLSearchParams(params).toString(); return this.get(`/api/audit${q ? '?'+q : ''}`); }
+
+    // ── Companies (multi-tenant) ────────────────
+    getCompanies(activeOnly = false){ return this.get(`/api/companies${activeOnly ? '?active_only=true' : ''}`); }
+    getCompany(id)                  { return this.get(`/api/companies/${id}`); }
+    getDefaultCompany()             { return this.get('/api/companies/default'); }
+    createCompany(data)             { return this.post('/api/companies', data); }
+    updateCompany(id, data)         { return this.put(`/api/companies/${id}`, data); }
+    deleteCompany(id)               { return this.del(`/api/companies/${id}`); }
 }
 
 const api = new ApiService();

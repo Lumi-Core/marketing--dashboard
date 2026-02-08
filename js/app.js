@@ -15,6 +15,7 @@ const App = {
         agents:     { module: typeof Agents     !== 'undefined' ? Agents     : null, icon: 'robot',          label: 'Agents' },
         reports:    { module: typeof Reports    !== 'undefined' ? Reports    : null, icon: 'chart-bar',      label: 'Reports' },
         audit:      { module: typeof Audit      !== 'undefined' ? Audit      : null, icon: 'scroll',         label: 'Audit Log' },
+        companies:  { module: typeof Companies  !== 'undefined' ? Companies  : null, icon: 'building',       label: 'Companies' },
         settings:   { module: typeof Settings   !== 'undefined' ? Settings   : null, icon: 'cog',            label: 'Settings' },
     },
 
@@ -29,6 +30,7 @@ const App = {
         if (typeof Agents     !== 'undefined') this.pages.agents.module     = Agents;
         if (typeof Reports    !== 'undefined') this.pages.reports.module    = Reports;
         if (typeof Audit      !== 'undefined') this.pages.audit.module      = Audit;
+        if (typeof Companies  !== 'undefined') this.pages.companies.module  = Companies;
         if (typeof Settings   !== 'undefined') this.pages.settings.module   = Settings;
 
         // Init all modules

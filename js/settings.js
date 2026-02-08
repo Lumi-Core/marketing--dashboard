@@ -9,14 +9,15 @@ const Settings = {
         const pg = $('#page-settings');
         if (!pg) return;
 
-        on(pg, 'click', '#save-settings-btn', () => this.saveSettings());
-        on(pg, 'click', '#test-connection-btn', () => this.testConnection());
-        on(pg, 'click', '.btn-refresh-health', () => this.loadSystemInfo());
+        on(pg, 'click', '#saveApiSettings', () => this.saveSettings());
+        on(pg, 'click', '#testConnectionBtn', () => this.testConnection());
+        on(pg, 'click', '#refreshSysInfo', () => this.loadSystemInfo());
+        on(pg, 'click', '#refreshReadiness', () => this.loadSystemInfo());
     },
 
     loadSaved() {
-        const urlInput = $('#settings-api-url');
-        const keyInput = $('#settings-api-key');
+        const urlInput = $('#apiBaseUrl');
+        const keyInput = $('#apiKey');
         if (urlInput) urlInput.value = api.baseUrl || 'http://localhost:8000';
         if (keyInput) keyInput.value = api.apiKey || '';
     },
@@ -24,18 +25,22 @@ const Settings = {
     onPageActive() {
         this.loadSaved();
         this.loadSystemInfo();
+        // Also load companies table inside settings
+        if (typeof Companies !== 'undefined' && Companies._loadAll) {
+            Companies._loadAll();
+        }
     },
 
     saveSettings() {
-        const url = ($('#settings-api-url') || {}).value;
-        const key = ($('#settings-api-key') || {}).value;
+        const url = ($('#apiBaseUrl') || {}).value;
+        const key = ($('#apiKey') || {}).value;
         if (url) api.setBaseUrl(url);
         if (key !== undefined) api.setApiKey(key);
         showToast('Settings saved', 'success');
     },
 
     async testConnection() {
-        const statusEl = $('#connection-status');
+        const statusEl = $('#connectionStatus');
         try {
             if (statusEl) statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing…';
             const result = await api.getHealth();
@@ -48,8 +53,9 @@ const Settings = {
     },
 
     async loadSystemInfo() {
-        const container = $('#system-info');
-        if (!container) return;
+        const container = $('#systemInfo');
+        const readiness = $('#readinessInfo');
+
         try {
             const [health, ready, metrics] = await Promise.all([
                 api.getHealth().catch(() => null),
@@ -57,42 +63,35 @@ const Settings = {
                 api.getMetrics().catch(() => null),
             ]);
 
-            let html = '<div class="settings-info-grid">';
-
-            // Health
-            if (health) {
-                html += `<div class="info-card"><h4><i class="fas fa-heart"></i> Health</h4><div class="info-body">
-                    <div class="info-row"><span>Status</span><strong style="color:var(--${health.status === 'healthy' ? 'success' : 'danger'})">${health.status || '—'}</strong></div>
-                    ${health.version ? `<div class="info-row"><span>Version</span><strong>${escapeHtml(health.version)}</strong></div>` : ''}
-                </div></div>`;
+            // System info
+            if (container && health) {
+                let html = '';
+                html += `<div class="info-row"><span>Status</span><strong style="color:var(--${health.status === 'healthy' ? 'success' : 'danger'})">${health.status || '—'}</strong></div>`;
+                if (health.version) html += `<div class="info-row"><span>Version</span><strong>${escapeHtml(health.version)}</strong></div>`;
+                if (health.python_version) html += `<div class="info-row"><span>Python</span><strong>${escapeHtml(health.python_version)}</strong></div>`;
+                if (health.uptime) html += `<div class="info-row"><span>Uptime</span><strong>${escapeHtml(String(health.uptime))}</strong></div>`;
+                if (metrics) {
+                    Object.entries(metrics).forEach(([k, v]) => {
+                        html += `<div class="info-row"><span>${capitalize(k.replace(/_/g, ' '))}</span><strong>${typeof v === 'number' ? formatNumber(v) : escapeHtml(String(v))}</strong></div>`;
+                    });
+                }
+                container.innerHTML = html || '<p class="text-muted">No info available</p>';
             }
 
-            // Readiness checks
-            if (ready) {
+            // Readiness
+            if (readiness && ready) {
                 const checks = ready.checks || ready;
-                html += '<div class="info-card"><h4><i class="fas fa-clipboard-check"></i> Readiness</h4><div class="info-body">';
+                let html = '';
                 if (typeof checks === 'object') {
                     Object.entries(checks).forEach(([k, v]) => {
                         const ok = v === true || v === 'ok' || (v && v.status === 'ok');
                         html += `<div class="info-row"><span>${capitalize(k.replace(/_/g, ' '))}</span><strong style="color:var(--${ok ? 'success' : 'danger'})">${ok ? '✓ OK' : '✗ Fail'}</strong></div>`;
                     });
                 }
-                html += '</div></div>';
+                readiness.innerHTML = html || '<p class="text-muted">No checks available</p>';
             }
-
-            // Metrics
-            if (metrics) {
-                html += '<div class="info-card"><h4><i class="fas fa-tachometer-alt"></i> Metrics</h4><div class="info-body">';
-                Object.entries(metrics).forEach(([k, v]) => {
-                    html += `<div class="info-row"><span>${capitalize(k.replace(/_/g, ' '))}</span><strong>${typeof v === 'number' ? formatNumber(v) : escapeHtml(String(v))}</strong></div>`;
-                });
-                html += '</div></div>';
-            }
-
-            html += '</div>';
-            container.innerHTML = html;
         } catch (e) {
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-server"></i><p>Unable to fetch system info</p></div>`;
+            if (container) container.innerHTML = `<p class="text-muted">Unable to fetch system info</p>`;
         }
     }
 };
