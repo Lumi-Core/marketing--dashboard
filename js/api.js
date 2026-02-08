@@ -176,6 +176,13 @@ class ApiService {
     createCompany(data)             { return this.post('/api/companies', data); }
     updateCompany(id, data)         { return this.put(`/api/companies/${id}`, data); }
     deleteCompany(id)               { return this.del(`/api/companies/${id}`); }
+
+    // ── Database Maintenance ────────────────────
+    clearClients()                  { return this.del('/api/maintenance/clear-clients'); }
+    clearCampaigns()                { return this.del('/api/maintenance/clear-campaigns'); }
+    clearReports()                  { return this.del('/api/maintenance/clear-reports'); }
+    clearAudit()                    { return this.del('/api/maintenance/clear-audit'); }
+    clearAllData()                  { return this.del('/api/maintenance/clear-all'); }
 }
 
 const api = new ApiService();

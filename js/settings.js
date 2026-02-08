@@ -13,6 +13,13 @@ const Settings = {
         on(pg, 'click', '#testConnectionBtn', () => this.testConnection());
         on(pg, 'click', '#refreshSysInfo', () => this.loadSystemInfo());
         on(pg, 'click', '#refreshReadiness', () => this.loadSystemInfo());
+        
+        // Database maintenance buttons
+        on(pg, 'click', '#clearClientsBtn', () => this.clearClients());
+        on(pg, 'click', '#clearCampaignsBtn', () => this.clearCampaigns());
+        on(pg, 'click', '#clearReportsBtn', () => this.clearReports());
+        on(pg, 'click', '#clearAuditBtn', () => this.clearAudit());
+        on(pg, 'click', '#clearAllDataBtn', () => this.clearAllData());
     },
 
     loadSaved() {
@@ -99,5 +106,68 @@ const Settings = {
         } catch (e) {
             if (container) container.innerHTML = `<p class="text-muted">Unable to fetch system info</p>`;
         }
+    },
+
+    async clearClients() {
+        const confirmed = await confirmAction('Delete ALL clients? This cannot be undone!');
+        if (!confirmed) return;
+        try {
+            showLoading('Deleting all clients…');
+            await api.clearClients();
+            showToast('All clients deleted', 'success');
+        } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+        finally { hideLoading(); }
+    },
+
+    async clearCampaigns() {
+        const confirmed = await confirmAction('Delete ALL campaigns? This cannot be undone!');
+        if (!confirmed) return;
+        try {
+            showLoading('Deleting all campaigns…');
+            await api.clearCampaigns();
+            showToast('All campaigns deleted', 'success');
+        } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+        finally { hideLoading(); }
+    },
+
+    async clearReports() {
+        const confirmed = await confirmAction('Delete ALL reports? This cannot be undone!');
+        if (!confirmed) return;
+        try {
+            showLoading('Deleting all reports…');
+            await api.clearReports();
+            showToast('All reports deleted', 'success');
+        } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+        finally { hideLoading(); }
+    },
+
+    async clearAudit() {
+        const confirmed = await confirmAction('Delete ALL audit logs? This cannot be undone!');
+        if (!confirmed) return;
+        try {
+            showLoading('Deleting audit log…');
+            await api.clearAudit();
+            showToast('Audit log cleared', 'success');
+        } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+        finally { hideLoading(); }
+    },
+
+    async clearAllData() {
+        const confirmed = await confirmAction('⚠️ DELETE EVERYTHING? This will permanently delete ALL clients, campaigns, reports, and logs. This CANNOT be undone!');
+        if (!confirmed) return;
+        const doubleCheck = await confirmAction('Are you absolutely sure? Type "DELETE" to confirm (case-sensitive).');
+        if (doubleCheck !== true) {
+            const input = prompt('Type DELETE to confirm complete database reset:');
+            if (input !== 'DELETE') {
+                showToast('Reset cancelled', 'info');
+                return;
+            }
+        }
+        try {
+            showLoading('Resetting database…');
+            await api.clearAllData();
+            showToast('Database reset complete', 'success');
+        } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+        finally { hideLoading(); }
     }
 };

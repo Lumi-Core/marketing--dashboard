@@ -769,6 +769,21 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Database Maintenance Section -->
+                <div class="card mt-4">
+                    <div class="card-header" style="background:var(--danger);color:#fff">
+                        <h3><i class="fas fa-exclamation-triangle" style="margin-right:8px"></i>Database Maintenance</h3>
+                    </div>
+                    <p style="padding:0 20px;color:var(--gray-500);font-size:13px;margin-top:16px"><i class="fas fa-exclamation-circle" style="color:var(--warning)"></i> <strong>Warning:</strong> These actions permanently delete data. Use with extreme caution!</p>
+                    <div style="padding:0 20px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+                        <button class="btn btn-danger" id="clearClientsBtn"><i class="fas fa-users"></i> Clear All Clients</button>
+                        <button class="btn btn-danger" id="clearCampaignsBtn"><i class="fas fa-bullhorn"></i> Clear All Campaigns</button>
+                        <button class="btn btn-danger" id="clearReportsBtn"><i class="fas fa-chart-bar"></i> Clear All Reports</button>
+                        <button class="btn btn-danger" id="clearAuditBtn"><i class="fas fa-scroll"></i> Clear Audit Log</button>
+                        <button class="btn btn-danger" id="clearAllDataBtn" style="grid-column:span 2"><i class="fas fa-trash-alt"></i> Clear ALL Data (Full Reset)</button>
+                    </div>
+                </div>
             </section>
 
         </div><!-- /page-content -->
@@ -787,36 +802,19 @@
             <div class="modal-body">
                 <form id="clientForm">
                     <input type="hidden" name="id" id="clientId">
-                    <div class="form-row">
-                        <div class="form-group"><label>Name *</label><input type="text" name="name" class="form-control" required></div>
-                        <div class="form-group"><label>First Name</label><input type="text" name="first_name" class="form-control"></div>
+                    <div class="form-group"><label>Full Name *</label><input type="text" name="name" class="form-control" required placeholder="John Smith"></div>
+                    <div class="form-group"><label>WhatsApp Number *</label><input type="text" name="whatsapp_number" class="form-control" required placeholder="+971501234567"></div>
+                    <div class="form-group"><label>Email (optional)</label><input type="email" name="email" class="form-control" placeholder="john@example.com"></div>
+                    <div class="form-group">
+                        <label>Audience Type</label>
+                        <select name="audience_type" class="form-control">
+                            <option value="customer">Customer</option>
+                            <option value="investor">Investor</option>
+                            <option value="tenant">Tenant</option>
+                            <option value="partner">Partner</option>
+                            <option value="lead">Lead</option>
+                        </select>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>WhatsApp Number</label><input type="text" name="whatsapp_number" class="form-control" placeholder="+971..."></div>
-                        <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Phone</label><input type="text" name="phone" class="form-control"></div>
-                        <div class="form-group"><label>Company</label><input type="text" name="company" class="form-control"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Audience Type</label>
-                            <select name="audience_type" class="form-control">
-                                <option value="customer">Customer</option>
-                                <option value="investor">Investor</option>
-                                <option value="tenant">Tenant</option>
-                                <option value="partner">Partner</option>
-                                <option value="lead">Lead</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>Territory</label><input type="text" name="territory" class="form-control" placeholder="e.g. Dubai, Abu Dhabi"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Tags</label><input type="text" name="tags" class="form-control" placeholder="Comma-separated"></div>
-                        <div class="form-group"><label>Lead Name</label><input type="text" name="lead_name" class="form-control"></div>
-                    </div>
-                    <div class="form-group"><label>Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -837,34 +835,20 @@
             <div class="modal-body">
                 <form id="campaignForm">
                     <input type="hidden" name="id" id="campaignId">
-                    <div class="form-row">
-                        <div class="form-group"><label>Campaign Name *</label><input type="text" name="campaign_name" class="form-control" required></div>
-                        <div class="form-group"><label>Campaign Topic</label><input type="text" name="campaign_topic" class="form-control"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Target Audience</label>
-                            <select name="target_audience" class="form-control">
-                                <option value="customer">Customer</option>
-                                <option value="investor">Investor</option>
-                                <option value="tenant">Tenant</option>
-                                <option value="partner">Partner</option>
-                                <option value="all">All</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Approval Method</label>
-                            <select name="approval_method" class="form-control">
-                                <option value="email">Email</option>
-                                <option value="dashboard">Dashboard</option>
-                                <option value="auto">Auto-Approve</option>
-                                <option value="none">None</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group"><label>Message Draft</label><textarea name="message_draft" class="form-control" rows="4" placeholder="WhatsApp message content..."></textarea></div>
+                    <div class="form-group"><label>Campaign Name *</label><input type="text" name="campaign_name" class="form-control" required placeholder="Summer Sale 2026"></div>
                     <div class="form-group">
-                        <label>Campaign Image</label>
+                        <label>Target Audience *</label>
+                        <select name="target_audience" class="form-control">
+                            <option value="customer">Customer</option>
+                            <option value="investor">Investor</option>
+                            <option value="tenant">Tenant</option>
+                            <option value="partner">Partner</option>
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Message *</label><textarea name="message_draft" class="form-control" rows="5" required placeholder="Your WhatsApp marketing message..."></textarea></div>
+                    <div class="form-group">
+                        <label>Campaign Image (optional)</label>
                         <div class="image-upload-wrapper">
                             <input type="file" id="campaignImageFile" accept="image/*" class="form-control" style="margin-bottom:8px">
                             <input type="hidden" name="google_drive_image_url" id="campaignImageUrl">
@@ -879,30 +863,6 @@
                         <div class="form-group"><label>Start Date</label><input type="date" name="start_date" class="form-control"></div>
                         <div class="form-group"><label>End Date</label><input type="date" name="end_date" class="form-control"></div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Scheduled Time</label><input type="datetime-local" name="scheduled_time" class="form-control"></div>
-                        <div class="form-group">
-                            <label>Recurrence</label>
-                            <select name="recurrence" class="form-control">
-                                <option value="once">Once</option>
-                                <option value="daily">Daily</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="monthly">Monthly</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Priority</label>
-                            <select name="priority" class="form-control">
-                                <option value="0" selected>Normal</option>
-                                <option value="1">High</option>
-                                <option value="2">Urgent</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>Tags</label><input type="text" name="tags" class="form-control" placeholder="Comma-separated"></div>
-                    </div>
-                    <div class="form-group"><label>Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
                 </form>
             </div>
             <div class="modal-footer">
