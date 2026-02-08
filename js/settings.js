@@ -18,7 +18,13 @@ const Settings = {
     loadSaved() {
         const urlInput = $('#apiBaseUrl');
         const keyInput = $('#apiKey');
-        if (urlInput) urlInput.value = api.baseUrl || 'http://localhost:8000';
+        let baseUrl = api.baseUrl || 'http://localhost:8000';
+        // Ensure protocol is present for display
+        if (baseUrl && !baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
+            baseUrl = 'https://' + baseUrl;
+            api.setBaseUrl(baseUrl); // Fix it in storage too
+        }
+        if (urlInput) urlInput.value = baseUrl;
         if (keyInput) keyInput.value = api.apiKey || '';
     },
 

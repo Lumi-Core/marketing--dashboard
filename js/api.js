@@ -8,7 +8,14 @@ class ApiService {
         this._companyId = localStorage.getItem('mktCompanyId') || '';
     }
 
-    setBaseUrl(url) { this.baseUrl = url.replace(/\/$/, ''); localStorage.setItem('mktApiBaseUrl', this.baseUrl); }
+    setBaseUrl(url) { 
+        // Ensure protocol is present
+        if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+        }
+        this.baseUrl = url.replace(/\/$/, ''); 
+        localStorage.setItem('mktApiBaseUrl', this.baseUrl); 
+    }
     setApiKey(key) { this.apiKey = key; localStorage.setItem('mktApiKey', this.apiKey); }
 
     /** Get/set the active company filter */
