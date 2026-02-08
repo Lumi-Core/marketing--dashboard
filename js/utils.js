@@ -53,6 +53,10 @@ function getFormData(formEl) {
         if (!k) return;
         if (i.type === 'checkbox') d[k] = i.checked;
         else if (i.type === 'number') d[k] = i.value === '' ? null : Number(i.value);
+        else if (i.tagName === 'SELECT' && ['priority', 'company_id'].includes(k)) {
+            // Handle select fields that should be integers
+            d[k] = i.value === '' ? null : parseInt(i.value, 10);
+        }
         else d[k] = i.value;
     });
     return d;
@@ -64,7 +68,7 @@ function populateForm(formEl, data) {
         const el = formEl.querySelector(`[name="${k}"], #${k}`);
         if (!el) return;
         if (el.type === 'checkbox') el.checked = !!v;
-        else if (el.tagName === 'SELECT') { el.value = v || ''; }
+        else if (el.tagName === 'SELECT') { el.value = v ?? ''; }
         else el.value = v ?? '';
     });
 }
