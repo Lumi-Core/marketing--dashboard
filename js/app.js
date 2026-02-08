@@ -61,7 +61,9 @@ const App = {
         // Close sidebar on mobile when clicking overlay
         on(document, 'click', '.sidebar-overlay', () => {
             const sb = $('#sidebar');
+            const overlay = $('#sidebarOverlay');
             if (sb) sb.classList.remove('open');
+            if (overlay) overlay.classList.remove('active');
         });
 
         // Close modals on backdrop click
@@ -76,7 +78,9 @@ const App = {
         const mobileBtn = $('#mobileMenuBtn');
         if (mobileBtn) mobileBtn.addEventListener('click', () => {
             const sb = $('#sidebar');
+            const overlay = $('#sidebarOverlay');
             if (sb) sb.classList.toggle('open');
+            if (overlay) overlay.classList.toggle('active');
         });
 
         // Global refresh
@@ -126,9 +130,11 @@ const App = {
         const breadcrumb = $('#breadcrumb');
         if (breadcrumb && this.pages[page]) breadcrumb.textContent = `Home / ${this.pages[page].label}`;
 
-        // Close mobile sidebar
+        // Close mobile sidebar and overlay
         const sb = $('#sidebar');
+        const overlay = $('#sidebarOverlay');
         if (sb) sb.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
 
         this.currentPage = page;
 
