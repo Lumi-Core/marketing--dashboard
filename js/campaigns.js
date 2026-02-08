@@ -50,6 +50,73 @@ const Campaigns = {
         // Refresh button
         const refreshCampBtn = $('#refreshCampaignsBtn');
         if (refreshCampBtn) refreshCampBtn.addEventListener('click', () => this.loadCampaigns());
+
+        // Image upload handling
+        const imageInput = $('#campaignImageFile');
+        if (imageInput) imageInput.addEventListener('change', (e) => this.handleImageSelect(e));
+        
+        const removeImgBtn = $('#removeImageBtn');
+        if (removeImgBtn) removeImgBtn.addEventListener('click', () => this.clearImageUpload());
+    },
+
+    // ── Image Upload Handling ────────────────────
+    async handleImageSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const statusEl = $('#imageUploadStatus');
+        const previewEl = $('#imagePreview');
+        const previewImg = $('#imagePreviewImg');
+        const urlInput = $('#campaignImageUrl');
+        
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showToast('Please select an image file', 'warning');
+            return;
+        }
+        
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            showToast('Image must be less than 10MB', 'warning');
+            return;
+        }
+        
+        // Show local preview immediately
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            if (previewImg) previewImg.src = ev.target.result;
+            if (previewEl) previewEl.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+        
+        // Upload to S3
+        if (statusEl) statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        try {
+            const result = await api.uploadMedia(file);
+            if (result && result.url) {
+                if (urlInput) urlInput.value = result.url;
+                if (statusEl) statusEl.innerHTML = '<i class="fas fa-check-circle" style="color:var(--success)"></i> Uploaded successfully';
+                showToast('Image uploaded to S3', 'success');
+            } else {
+                throw new Error('No URL returned');
+            }
+        } catch (err) {
+            if (statusEl) statusEl.innerHTML = '<i class="fas fa-times-circle" style="color:var(--danger)"></i> Upload failed: ' + err.message;
+            showToast('Image upload failed: ' + err.message, 'error');
+            this.clearImageUpload();
+        }
+    },
+
+    clearImageUpload() {
+        const imageInput = $('#campaignImageFile');
+        const statusEl = $('#imageUploadStatus');
+        const previewEl = $('#imagePreview');
+        const urlInput = $('#campaignImageUrl');
+        
+        if (imageInput) imageInput.value = '';
+        if (statusEl) statusEl.innerHTML = '';
+        if (previewEl) previewEl.style.display = 'none';
+        if (urlInput) urlInput.value = '';
     },
 
     onPageActive() { this.loadCampaigns(); },
@@ -100,6 +167,7 @@ const Campaigns = {
         this.editingId = null;
         const form = $('#campaignForm');
         if (form) resetForm(form);
+        this.clearImageUpload();
         const title = $('#campaignModalTitle');
         if (title) title.textContent = 'Create Campaign';
         openModal('campaignModal');
@@ -111,6 +179,20 @@ const Campaigns = {
             this.editingId = id;
             const form = $('#campaignForm');
             if (form) populateForm(form, camp);
+            
+            // Handle existing image
+            this.clearImageUpload();
+            if (camp.google_drive_image_url) {
+                const urlInput = $('#campaignImageUrl');
+                const statusEl = $('#imageUploadStatus');
+                const previewEl = $('#imagePreview');
+                const previewImg = $('#imagePreviewImg');
+                if (urlInput) urlInput.value = camp.google_drive_image_url;
+                if (previewImg) previewImg.src = camp.google_drive_image_url;
+                if (previewEl) previewEl.style.display = 'block';
+                if (statusEl) statusEl.innerHTML = '<i class="fas fa-check-circle" style="color:var(--success)"></i> Current image';
+            }
+            
             const title = $('#campaignModalTitle');
             if (title) title.textContent = 'Edit Campaign';
             openModal('campaignModal');

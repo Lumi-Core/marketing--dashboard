@@ -131,6 +131,9 @@ class ApiService {
     getRunningCampaigns()           { return this.get('/api/campaigns/running'); }
     getCampaignHistory(limit = 20)  { return this.get(`/api/campaigns/history?limit=${limit}`); }
 
+    // ── Media Upload ────────────────────────────
+    uploadMedia(file)               { return this.uploadFile('/api/media/upload', file); }
+
     // ── Reports ─────────────────────────────────
     getReports(campaignName)        { const p = this._injectCompany({}); if(campaignName) p.campaign_name=campaignName; const q = new URLSearchParams(p).toString(); return this.get(`/api/reports${q ? '?'+q : ''}`); }
 
