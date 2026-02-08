@@ -54,7 +54,7 @@ const App = {
         window.addEventListener('hashchange', () => this.handleHashChange());
 
         // Mobile sidebar toggle
-        const toggle = $('#sidebar-toggle');
+        const toggle = $('#sidebarToggle');
         if (toggle) toggle.addEventListener('click', () => {
             const sb = $('#sidebar');
             if (sb) sb.classList.toggle('open');
@@ -72,10 +72,17 @@ const App = {
         });
 
         // Close modal buttons
-        on(document, 'click', '.modal-close, .btn-cancel-modal', () => closeAllModals());
+        on(document, 'click', '.modal-close, .btn-cancel-modal, #cancelClientModal, #cancelCampaignModal, #cancelImportModal, #cancelTargetModal', () => closeAllModals());
+
+        // Mobile menu button
+        const mobileBtn = $('#mobileMenuBtn');
+        if (mobileBtn) mobileBtn.addEventListener('click', () => {
+            const sb = $('#sidebar');
+            if (sb) sb.classList.toggle('open');
+        });
 
         // Global refresh
-        const refreshBtn = $('#global-refresh');
+        const refreshBtn = $('#refreshBtn');
         if (refreshBtn) refreshBtn.addEventListener('click', () => {
             const p = this.pages[this.currentPage];
             if (p && p.module && p.module.onPageActive) p.module.onPageActive();
@@ -85,7 +92,7 @@ const App = {
         // Keyboard shortcuts
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') closeAllModals();
-            if (e.ctrlKey && e.key === 'k') { e.preventDefault(); const s = $('.search-input'); if (s) s.focus(); }
+            if (e.ctrlKey && e.key === 'k') { e.preventDefault(); const s = $('#globalSearch'); if (s) s.focus(); }
         });
     },
 
@@ -116,6 +123,10 @@ const App = {
         // Update header title
         const title = $('#page-title');
         if (title && this.pages[page]) title.textContent = this.pages[page].label;
+
+        // Update breadcrumb
+        const breadcrumb = $('#breadcrumb');
+        if (breadcrumb && this.pages[page]) breadcrumb.textContent = `Home / ${this.pages[page].label}`;
 
         // Close mobile sidebar
         const sb = $('#sidebar');

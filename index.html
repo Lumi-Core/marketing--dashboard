@@ -157,6 +157,7 @@
                             <button class="btn btn-sm" id="refreshHealthBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
                         </div>
                         <div class="health-grid" id="healthGrid"></div>
+                        <div class="system-metrics" id="system-metrics" style="display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px 0"></div>
                     </div>
                     <div class="chart-card">
                         <div class="card-header"><h3>Quick Actions</h3></div>
@@ -399,27 +400,36 @@
                         </div>
                     </div>
                 </div>
-            </section>
+
+                <!-- Best Timing Tool -->
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-clock"></i> Best Send Time</div>
+                            <div class="analytics-section-subtitle">Calculate optimal timing for your campaigns</div>
                         </div>
                     </div>
                     <div class="card">
-                        <div class="best-time-tool">
-                            <div class="form-group">
-                                <label>Target Audience</label>
-                                <select id="best-time-audience" class="form-control">
-                                    <option value="all">All Audiences</option>
-                                    <option value="customer">Customer</option>
-                                    <option value="investor">Investor</option>
-                                    <option value="tenant">Tenant</option>
-                                    <option value="partner">Partner</option>
-                                </select>
+                        <div class="best-time-tool" style="padding:20px">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Target Audience</label>
+                                    <select id="best-time-audience" class="form-control">
+                                        <option value="all">All Audiences</option>
+                                        <option value="customer">Customer</option>
+                                        <option value="investor">Investor</option>
+                                        <option value="tenant">Tenant</option>
+                                        <option value="partner">Partner</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary" id="best-time-btn" style="align-self:flex-end"><i class="fas fa-clock"></i> Calculate Best Time</button>
                             </div>
-                            <button class="btn btn-primary" id="best-time-btn"><i class="fas fa-clock"></i> Calculate Best Time</button>
                             <div id="best-time-result" class="mt-3"></div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Message Evaluator -->
                 <div class="analytics-section">
                     <div class="analytics-section-header">
                         <div>
@@ -428,7 +438,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="message-evaluator">
+                        <div class="message-evaluator" style="padding:20px">
                             <div class="form-group">
                                 <label>Message Draft</label>
                                 <textarea id="eval-message" class="form-control" rows="4" placeholder="Paste your WhatsApp message draft here..."></textarea>
@@ -443,7 +453,7 @@
                                         <option value="partner">Partner</option>
                                     </select>
                                 </div>
-                                <button class="btn btn-primary" id="evaluate-msg-btn"><i class="fas fa-star"></i> Evaluate</button>
+                                <button class="btn btn-primary" id="evaluate-msg-btn" style="align-self:flex-end"><i class="fas fa-star"></i> Evaluate</button>
                             </div>
                             <div id="eval-result" class="eval-result mt-3"></div>
                         </div>

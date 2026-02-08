@@ -18,7 +18,7 @@ const toggle = (el, force) => { if (el) el.classList.toggle('hidden', force !== 
 
 /* ── Toast ───────────────────────────────────── */
 function showToast(message, type = 'info', duration = 4000) {
-    const container = $('#toast-container');
+    const container = $('#toastContainer');
     if (!container) return;
     const icons = { success: 'check-circle', error: 'exclamation-circle', warning: 'exclamation-triangle', info: 'info-circle' };
     const toast = $$$('div', { className: `toast ${type}`, innerHTML: `<i class="fas fa-${icons[type] || 'info-circle'}"></i><span>${escapeHtml(message)}</span><button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>` });
@@ -39,10 +39,10 @@ function closeAllModals() { $$('.modal').forEach(m => closeModal(m.id)); }
 
 /* ── Loading overlay ─────────────────────────── */
 function showLoading(msg) {
-    const o = $('#loading-overlay');
-    if (o) { const t = o.querySelector('.loading-text'); if (t) t.textContent = msg || 'Loading…'; show(o); }
+    const o = $('#loadingOverlay');
+    if (o) { const t = o.querySelector('p'); if (t) t.textContent = msg || 'Loading…'; show(o); }
 }
-function hideLoading() { const o = $('#loading-overlay'); if (o) hide(o); }
+function hideLoading() { const o = $('#loadingOverlay'); if (o) hide(o); }
 
 /* ── Form helpers ────────────────────────────── */
 function getFormData(formEl) {

@@ -46,6 +46,10 @@ const Campaigns = {
         if (importBtn) importBtn.addEventListener('click', () => {
             if (this._importTarget === 'campaigns') this.importCampaigns();
         });
+
+        // Refresh button
+        const refreshCampBtn = $('#refreshCampaignsBtn');
+        if (refreshCampBtn) refreshCampBtn.addEventListener('click', () => this.loadCampaigns());
     },
 
     onPageActive() { this.loadCampaigns(); },
@@ -53,13 +57,15 @@ const Campaigns = {
     async loadCampaigns() {
         try {
             const params = {};
-            if (this.statusFilter) params.status = this.statusFilter;
+            if (this.statusFilter && this.statusFilter !== 'all') params.status = this.statusFilter;
             params.limit = this.perPage;
             params.offset = (this.page - 1) * this.perPage;
             const result = await api.getCampaigns(params);
             this.data = Array.isArray(result) ? result : (result.campaigns || []);
             this.renderTable();
             const total = result.total || this.data.length;
+            const showingInfo = $('#campaignsShowingInfo');
+            if (showingInfo) showingInfo.textContent = `Showing ${this.data.length} of ${total} campaigns`;
             buildPagination($('#campaignsPagination'), this.page, Math.ceil(total / this.perPage), p => { this.page = p; this.loadCampaigns(); });
         } catch (e) {
             showToast('Failed to load campaigns: ' + e.message, 'error');
@@ -73,14 +79,15 @@ const Campaigns = {
             tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-bullhorn"></i><p>No campaigns found</p></td></tr>';
             return;
         }
+        const priorityLabel = (p) => { const m = {'0':'Normal','1':'High','2':'Urgent'}; return m[String(p)] || p || 'Normal'; };
         tbody.innerHTML = this.data.map(c => `<tr>
             <td>${c.id}</td>
             <td><strong>${escapeHtml(c.campaign_name || c.name)}</strong></td>
-            <td>${statusBadge(c.status)}</td>
-            <td>${escapeHtml(c.audience_type || '—')}</td>
-            <td>${escapeHtml(c.approval_method || '—')}</td>
+            <td>${escapeHtml(c.audience_type || c.target_audience || '—')}</td>
             <td>${formatDate(c.scheduled_time)}</td>
             <td>${c.recurrence || '—'}</td>
+            <td>${statusBadge(priorityLabel(c.priority))}</td>
+            <td>${statusBadge(c.status)}</td>
             <td class="actions-cell">
                 <button class="btn btn-sm btn-edit-campaign" data-id="${c.id}" title="Edit"><i class="fas fa-edit"></i></button>
                 <button class="btn btn-sm btn-info btn-target-campaign" data-id="${c.id}" title="Targets"><i class="fas fa-crosshairs"></i></button>

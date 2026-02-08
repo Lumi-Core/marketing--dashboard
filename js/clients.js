@@ -7,6 +7,7 @@ const Clients = {
     perPage: 20,
     search: '',
     audienceFilter: '',
+    statusFilter: '',
     editingId: null,
 
     init() { this.bindEvents(); },
@@ -23,11 +24,19 @@ const Clients = {
         const audFilter = $('#clientAudienceFilter');
         if (audFilter) audFilter.addEventListener('change', e => { this.audienceFilter = e.target.value; this.page = 1; this.loadClients(); });
 
+        // Status filter
+        const statusFilter = $('#clientStatusFilter');
+        if (statusFilter) statusFilter.addEventListener('change', e => { this.statusFilter = e.target.value; this.page = 1; this.loadClients(); });
+
+        // Refresh button
+        const refreshBtn = $('#refreshClientsBtn');
+        if (refreshBtn) refreshBtn.addEventListener('click', () => this.loadClients());
+
         // Add client btn
         on(pg, 'click', '.btn-add-client', () => this.openAddModal());
 
-        // Import / Export
-        on(pg, 'click', '.btn-import-clients', () => openModal('importModal'));
+        // Import modal confirm — only handle client imports
+        on(pg, 'click', '.btn-import-clients', () => { this._importTarget = 'clients'; openModal('importModal'); });
         on(pg, 'click', '.btn-export-clients', () => this.exportClients());
 
         // Table actions
@@ -38,9 +47,11 @@ const Clients = {
         const saveBtn = $('#saveClientBtn');
         if (saveBtn) saveBtn.addEventListener('click', () => this.saveClient());
 
-        // Import modal confirm
+        // Import button — only if this module triggered it
         const importBtn = $('#submitImport');
-        if (importBtn) importBtn.addEventListener('click', () => this.importClients());
+        if (importBtn) importBtn.addEventListener('click', () => {
+            if (this._importTarget === 'clients') this.importClients();
+        });
     },
 
     onPageActive() { this.loadClients(); },
@@ -50,12 +61,15 @@ const Clients = {
             const params = {};
             if (this.search) params.search = this.search;
             if (this.audienceFilter) params.audience_type = this.audienceFilter;
+            if (this.statusFilter) params.status = this.statusFilter;
             params.limit = this.perPage;
             params.offset = (this.page - 1) * this.perPage;
             const result = await api.getClients(params);
             this.data = Array.isArray(result) ? result : (result.clients || []);
             this.renderTable();
             const total = result.total || this.data.length;
+            const showingInfo = $('#clientsShowingInfo');
+            if (showingInfo) showingInfo.textContent = `Showing ${this.data.length} of ${total} clients`;
             buildPagination($('#clientsPagination'), this.page, Math.ceil(total / this.perPage), p => { this.page = p; this.loadClients(); });
         } catch (e) {
             showToast('Failed to load clients: ' + e.message, 'error');
@@ -66,15 +80,17 @@ const Clients = {
         const tbody = $('#clientsTableBody');
         if (!tbody) return;
         if (!this.data.length) {
-            tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-users"></i><p>No clients found</p></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="9" class="empty-state"><i class="fas fa-users"></i><p>No clients found</p></td></tr>';
             return;
         }
         tbody.innerHTML = this.data.map(c => `<tr>
             <td>${c.id}</td>
             <td><strong>${escapeHtml(c.name)}</strong></td>
-            <td>${escapeHtml(c.phone || '—')}</td>
+            <td>${escapeHtml(c.whatsapp_number || c.phone || '—')}</td>
             <td>${escapeHtml(c.email || '—')}</td>
+            <td>${escapeHtml(c.company || '—')}</td>
             <td>${statusBadge(c.audience_type || 'general')}</td>
+            <td>${escapeHtml(c.territory || '—')}</td>
             <td>${statusBadge(c.status || 'active')}</td>
             <td class="actions-cell">
                 <button class="btn btn-sm btn-edit-client" data-id="${c.id}" title="Edit"><i class="fas fa-edit"></i></button>
