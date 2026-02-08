@@ -102,30 +102,6 @@ const Dashboard = {
         `).join('');
     },
 
-    async renderAgentStatus() {
-        const container = $('#agentStatusPreview');
-        if (!container) return;
-        try {
-            const status = await api.getAgentsStatus();
-            if (!status || !status.agents) { 
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-robot"></i><p>No agent data</p></div>'; 
-                return; 
-            }
-            container.innerHTML = Object.entries(status.agents).map(([name, info]) => {
-                const online = info.status === 'online';
-                return `<div class="recent-item ${online ? 'online' : 'offline'}">
-                    <div class="recent-icon"><i class="fas fa-${online ? 'robot' : 'plug'}"></i></div>
-                    <div class="recent-info">
-                        <strong>${escapeHtml(name)}</strong>
-                        <small>${online ? 'Online • ' + timeAgo(info.last_seen) : 'Offline'}</small>
-                    </div>
-                </div>`;
-            }).join('');
-        } catch { 
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Unable to reach agents API</p></div>'; 
-        }
-    },
-
     formatUptime(seconds) {
         const d = Math.floor(seconds / 86400), h = Math.floor((seconds % 86400) / 3600), m = Math.floor((seconds % 3600) / 60);
         if (d > 0) return `${d}d ${h}h`;

@@ -47,9 +47,6 @@
                 <li class="nav-item" data-page="approvals">
                     <a href="#approvals"><i class="fas fa-check-circle"></i><span>Approvals</span></a>
                 </li>
-                <li class="nav-item" data-page="agents">
-                    <a href="#agents"><i class="fas fa-robot"></i><span>Agents Monitor</span></a>
-                </li>
                 <li class="nav-item" data-page="reports">
                     <a href="#reports"><i class="fas fa-file-alt"></i><span>Reports</span></a>
                 </li>
@@ -177,13 +174,6 @@
                             <a href="#campaigns" class="link">View All</a>
                         </div>
                         <div id="recentCampaigns" class="recent-list"></div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Agent Status</h3>
-                            <a href="#agents" class="link">Monitor</a>
-                        </div>
-                        <div id="agentStatusPreview" class="recent-list"></div>
                     </div>
                 </div>
             </section>
@@ -473,37 +463,6 @@
                     <i class="fas fa-check-circle"></i>
                     <h3>No Pending Approvals</h3>
                     <p>All campaigns have been reviewed.</p>
-                </div>
-            </section>
-
-            <!-- ============ AGENTS MONITOR ============ -->
-            <section class="page hidden" id="page-agents">
-                <div class="page-header">
-                    <div class="header-actions">
-                        <button class="btn btn-primary" id="refreshAgentsBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
-                    </div>
-                </div>
-
-                <div class="stats-grid" id="agentHeartbeats"></div>
-
-                <div class="card mt-4">
-                    <div class="card-header"><h3>Recent Agent Runs</h3></div>
-                    <div class="table-container">
-                        <table class="data-table" id="agentRunsTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Agent</th>
-                                    <th>Task</th>
-                                    <th>Status</th>
-                                    <th>Started</th>
-                                    <th>Duration</th>
-                                    <th>Error</th>
-                                </tr>
-                            </thead>
-                            <tbody id="agentRunsBody"></tbody>
-                        </table>
-                    </div>
                 </div>
             </section>
 
@@ -958,7 +917,6 @@
     <script src="js/workflow.js"></script>
     <script src="js/analytics.js"></script>
     <script src="js/approvals.js"></script>
-    <script src="js/agents.js"></script>
     <script src="js/reports.js"></script>
     <script src="js/audit.js"></script>
     <script src="js/companies.js"></script>

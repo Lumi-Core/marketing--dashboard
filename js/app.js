@@ -12,7 +12,6 @@ const App = {
         workflow:   { module: typeof Workflow    !== 'undefined' ? Workflow    : null, icon: 'project-diagram',label: 'Workflow' },
         analytics:  { module: typeof Analytics  !== 'undefined' ? Analytics  : null, icon: 'lightbulb',      label: 'Analytics Insights' },
         approvals:  { module: typeof Approvals  !== 'undefined' ? Approvals  : null, icon: 'check-double',   label: 'Approvals' },
-        agents:     { module: typeof Agents     !== 'undefined' ? Agents     : null, icon: 'robot',          label: 'Agents' },
         reports:    { module: typeof Reports    !== 'undefined' ? Reports    : null, icon: 'chart-bar',      label: 'Reports' },
         audit:      { module: typeof Audit      !== 'undefined' ? Audit      : null, icon: 'scroll',         label: 'Audit Log' },
         companies:  { module: typeof Companies  !== 'undefined' ? Companies  : null, icon: 'building',       label: 'Companies' },
@@ -27,7 +26,6 @@ const App = {
         if (typeof Workflow    !== 'undefined') this.pages.workflow.module   = Workflow;
         if (typeof Analytics  !== 'undefined') this.pages.analytics.module  = Analytics;
         if (typeof Approvals  !== 'undefined') this.pages.approvals.module  = Approvals;
-        if (typeof Agents     !== 'undefined') this.pages.agents.module     = Agents;
         if (typeof Reports    !== 'undefined') this.pages.reports.module    = Reports;
         if (typeof Audit      !== 'undefined') this.pages.audit.module      = Audit;
         if (typeof Companies  !== 'undefined') this.pages.companies.module  = Companies;
