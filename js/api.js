@@ -3,7 +3,13 @@
  */
 class ApiService {
     constructor() {
-        this.baseUrl = localStorage.getItem('mktApiBaseUrl') || 'http://localhost:8000';
+        let storedUrl = localStorage.getItem('mktApiBaseUrl') || 'http://localhost:8000';
+        // Auto-fix missing protocol on load
+        if (storedUrl && !storedUrl.startsWith('http://') && !storedUrl.startsWith('https://')) {
+            storedUrl = 'https://' + storedUrl;
+            localStorage.setItem('mktApiBaseUrl', storedUrl);
+        }
+        this.baseUrl = storedUrl;
         this.apiKey = localStorage.getItem('mktApiKey') || '';
         this._companyId = localStorage.getItem('mktCompanyId') || '';
     }
