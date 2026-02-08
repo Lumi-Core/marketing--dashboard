@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Campaign Agent</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/analytics.css">
+    <link rel="stylesheet" href="css/analytics-tools.css">
+    <link rel="stylesheet" href="css/analytics-enhanced.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon"><i class="fab fa-whatsapp"></i></div>
+                <span>Marketing Agent</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-menu">
+            <ul class="nav-list">
+                <li class="nav-item active" data-page="dashboard">
+                    <a href="#dashboard"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
+                </li>
+                <li class="nav-item" data-page="analytics">
+                    <a href="#analytics"><i class="fas fa-lightbulb"></i><span>Analytics Insights</span></a>
+                </li>
+                <li class="nav-item" data-page="clients">
+                    <a href="#clients"><i class="fas fa-users"></i><span>Clients</span></a>
+                </li>
+                <li class="nav-item" data-page="campaigns">
+                    <a href="#campaigns"><i class="fas fa-bullhorn"></i><span>Campaigns</span></a>
+                </li>
+                <li class="nav-item" data-page="workflow">
+                    <a href="#workflow"><i class="fas fa-cogs"></i><span>Workflow</span></a>
+                </li>
+                <li class="nav-item" data-page="approvals">
+                    <a href="#approvals"><i class="fas fa-check-circle"></i><span>Approvals</span></a>
+                </li>
+                <li class="nav-item" data-page="agents">
+                    <a href="#agents"><i class="fas fa-robot"></i><span>Agents Monitor</span></a>
+                </li>
+                <li class="nav-item" data-page="reports">
+                    <a href="#reports"><i class="fas fa-file-alt"></i><span>Reports</span></a>
+                </li>
+                <li class="nav-item" data-page="audit">
+                    <a href="#audit"><i class="fas fa-history"></i><span>Audit Log</span></a>
+                </li>
+                <li class="nav-item" data-page="settings">
+                    <a href="#settings"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="health-indicator" id="healthIndicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Checking...</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 id="page-title">Dashboard</h1>
+                    <span class="breadcrumb" id="breadcrumb">Home / Dashboard</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search..." id="globalSearch">
+                </div>
+                <button class="btn btn-icon" id="refreshBtn" title="Refresh Data">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="btn btn-icon" id="notificationBtn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </button>
+                <div class="user-menu">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=25D366&color=fff" alt="User" class="avatar">
+                    <span>Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content Container -->
+        <div class="page-content" id="pageContent">
+
+            <!-- ============ DASHBOARD ============ -->
+            <section class="page" id="page-dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3 id="stat-clients">0</h3>
+                            <p>Total Clients</p>
+                        </div>
+                        <div class="stat-trend up"><i class="fas fa-database"></i><span>Active</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-bullhorn"></i></div>
+                        <div class="stat-info">
+                            <h3 id="stat-campaigns">0</h3>
+                            <p>Total Campaigns</p>
+                        </div>
+                        <div class="stat-trend"><i class="fas fa-chart-bar"></i><span>All Time</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><i class="fas fa-hourglass-half"></i></div>
+                        <div class="stat-info">
+                            <h3 id="stat-pending">0</h3>
+                            <p>Pending Approval</p>
+                        </div>
+                        <div class="stat-trend"><i class="fas fa-clock"></i><span>Awaiting</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-robot"></i></div>
+                        <div class="stat-info">
+                            <h3 id="stat-running">0</h3>
+                            <p>Active Workflows</p>
+                        </div>
+                        <div class="stat-trend"><i class="fas fa-spinner fa-spin"></i><span>Running</span></div>
+                    </div>
+                </div>
+
+                <div class="charts-row">
+                    <div class="chart-card wide">
+                        <div class="card-header">
+                            <h3><i class="fas fa-heartbeat" style="color:var(--success);margin-right:8px"></i>System Health</h3>
+                            <button class="btn btn-sm" id="refreshHealthBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                        <div class="health-grid" id="healthGrid"></div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="card-header"><h3>Quick Actions</h3></div>
+                        <div class="quick-actions">
+                            <button class="action-btn" id="qaTriggerCampaign"><i class="fas fa-play"></i><span>Trigger Campaign</span></button>
+                            <button class="action-btn" id="qaAddClient"><i class="fas fa-user-plus"></i><span>Add Client</span></button>
+                            <button class="action-btn" id="qaNewCampaign"><i class="fas fa-plus"></i><span>New Campaign</span></button>
+                            <button class="action-btn" id="qaViewApprovals"><i class="fas fa-check-circle"></i><span>View Approvals</span></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Recent Campaigns</h3>
+                            <a href="#campaigns" class="link">View All</a>
+                        </div>
+                        <div id="recentCampaigns" class="recent-list"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Agent Status</h3>
+                            <a href="#agents" class="link">Monitor</a>
+                        </div>
+                        <div id="agentStatusPreview" class="recent-list"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ CLIENTS ============ -->
+            <section class="page hidden" id="page-clients">
+                <div class="page-header">
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="addClientBtn"><i class="fas fa-user-plus"></i> Add Client</button>
+                        <button class="btn btn-secondary" id="importClientsBtn"><i class="fas fa-file-excel"></i> Import Excel</button>
+                        <button class="btn btn-secondary" id="exportClientsBtn"><i class="fas fa-download"></i> Export Excel</button>
+                        <button class="btn btn-sm" id="refreshClientsBtn"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="search-inline">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="clientSearch" placeholder="Search clients..." class="form-control">
+                    </div>
+                    <select id="clientAudienceFilter" class="form-control">
+                        <option value="">All Audiences</option>
+                        <option value="customer">Customer</option>
+                        <option value="investor">Investor</option>
+                        <option value="tenant">Tenant</option>
+                        <option value="partner">Partner</option>
+                        <option value="lead">Lead</option>
+                    </select>
+                    <select id="clientStatusFilter" class="form-control">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="clientsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>WhatsApp</th>
+                                <th>Email</th>
+                                <th>Company</th>
+                                <th>Audience</th>
+                                <th>Territory</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <span class="showing-info" id="clientsShowingInfo">Showing 0 clients</span>
+                    <div class="pagination" id="clientsPagination"></div>
+                </div>
+            </section>
+
+            <!-- ============ CAMPAIGNS ============ -->
+            <section class="page hidden" id="page-campaigns">
+                <div class="page-header">
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="addCampaignBtn"><i class="fas fa-plus"></i> New Campaign</button>
+                        <button class="btn btn-secondary" id="importCampaignsBtn"><i class="fas fa-file-excel"></i> Import Excel</button>
+                        <button class="btn btn-secondary" id="exportCampaignsBtn"><i class="fas fa-download"></i> Export Excel</button>
+                        <button class="btn btn-sm" id="refreshCampaignsBtn"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                </div>
+
+                <div class="calendar-tabs">
+                    <button class="tab-btn active" data-filter="all">All</button>
+                    <button class="tab-btn" data-filter="draft">Draft</button>
+                    <button class="tab-btn" data-filter="scheduled">Scheduled</button>
+                    <button class="tab-btn" data-filter="pending_approval">Pending</button>
+                    <button class="tab-btn" data-filter="approved">Approved</button>
+                    <button class="tab-btn" data-filter="completed">Completed</button>
+                    <button class="tab-btn" data-filter="failed">Failed</button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="campaignsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Campaign Name</th>
+                                <th>Audience</th>
+                                <th>Scheduled</th>
+                                <th>Recurrence</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campaignsTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <span class="showing-info" id="campaignsShowingInfo">Showing 0 campaigns</span>
+                    <div class="pagination" id="campaignsPagination"></div>
+                </div>
+            </section>
+
+            <!-- ============ WORKFLOW ============ -->
+            <section class="page hidden" id="page-workflow">
+                <div class="workflow-grid">
+                    <div class="card">
+                        <div class="card-header"><h3>Trigger Campaign Workflow</h3></div>
+                        <form id="workflowForm" class="workflow-form">
+                            <div class="form-group">
+                                <label>Campaign Name (optional)</label>
+                                <input type="text" name="campaign_name" class="form-control" placeholder="Leave empty for auto-detect">
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="force"> Force re-run even if recently executed
+                                </label>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-play"></i> Start Workflow</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3>Running Workflows</h3><button class="btn btn-sm" id="refreshRunningBtn"><i class="fas fa-sync-alt"></i></button></div>
+                        <div id="runningWorkflows" class="workflow-list"></div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3>Workflow History</h3>
+                        <button class="btn btn-sm" id="refreshHistoryBtn"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" id="workflowHistoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Campaign ID</th>
+                                    <th>Status</th>
+                                    <th>Started</th>
+                                    <th>Completed</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="workflowHistoryBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ ANALYTICS INSIGHTS ============ -->
+            <section class="page hidden" id="page-analytics">
+                <div class="page-header">
+                    <div class="header-actions analytics-header-controls">
+                        <button class="btn btn-primary" id="refreshAnalytics"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                </div>
+
+                <!-- Key Performance Indicators -->
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-tachometer-alt"></i> Key Performance Indicators</div>
+                            <div class="analytics-section-subtitle">Real-time metrics and growth indicators</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm btn-refresh-kpis"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div id="kpi-cards-grid" class="kpi-cards-grid">
+                        <p class="text-muted">Loading KPIs...</p>
+                    </div>
+                </div>
+
+                <!-- Strategic Insights -->
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-chess-queen"></i> Strategic Recommendations</div>
+                            <div class="analytics-section-subtitle">Priority insights for decision making</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm btn-refresh-strategic"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="card">
+                        <div id="strategic-insights-content" class="strategic-insights-content">
+                            <p class="text-muted">Loading strategic insights...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Engagement Breakdown -->
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-chart-pie"></i> Engagement Breakdown</div>
+                            <div class="analytics-section-subtitle">Detailed interaction patterns and conversion metrics</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm btn-refresh-engagement"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="card">
+                        <div id="engagement-breakdown-content" class="engagement-breakdown-content">
+                            <p class="text-muted">Loading engagement data...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-brain"></i> AI Performance Overview</div>
+                            <div class="analytics-section-subtitle">GPT-4o analysis of your campaign performance</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm btn-refresh-overview"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="card"><div id="analytics-overview-content" class="ai-overview-content"><p class="text-muted">Loading AI insights...</p></div></div>
+                </div>
+
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-chart-line"></i> Performance Summary</div>
+                            <div class="analytics-section-subtitle">Comprehensive campaign and delivery statistics</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm btn-refresh-performance"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="card"><div id="performance-summary-content"><p class="text-muted">Loading performance data...</p></div></div>
+                </div>
+
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-lightbulb"></i> AI Recommendations</div>
+                            <div class="analytics-section-subtitle">Data-driven suggestions to improve campaigns</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm btn-refresh-recs"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="card"><div id="recommendations-content" class="recommendations-grid"></div></div>
+                </div>
+
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-users"></i> Audience Insights</div>
+                            <div class="analytics-section-subtitle">Distribution and performance by audience segment</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm btn-refresh-audience"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="card"><div id="audience-insights-content"><p class="text-muted">Loading audience insights...</p></div></div>
+                </div>
+
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-history"></i> Recent Activity</div>
+                            <div class="analytics-section-subtitle">Timeline of campaign and agent operations</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm btn-refresh-activity"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="card"><div id="recent-activity-content"><p class="text-muted">Loading recent activity...</p></div></div>
+                </div>
+
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-clock"></i> Best Send Time</div>
+                            <div class="analytics-section-subtitle">Optimal WhatsApp delivery window for UAE market</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="best-time-tool">
+                            <div class="form-group">
+                                <label>Target Audience</label>
+                                <select id="best-time-audience" class="form-control">
+                                    <option value="all">All Audiences</option>
+                                    <option value="customer">Customer</option>
+                                    <option value="investor">Investor</option>
+                                    <option value="tenant">Tenant</option>
+                                    <option value="partner">Partner</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" id="best-time-btn"><i class="fas fa-clock"></i> Calculate Best Time</button>
+                            <div id="best-time-result" class="mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analytics-section">
+                    <div class="analytics-section-header">
+                        <div>
+                            <div class="analytics-section-title"><i class="fas fa-spell-check"></i> Message Evaluator</div>
+                            <div class="analytics-section-subtitle">Score your draft message before sending</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="message-evaluator">
+                            <div class="form-group">
+                                <label>Message Draft</label>
+                                <textarea id="eval-message" class="form-control" rows="4" placeholder="Paste your WhatsApp message draft here..."></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Target Audience</label>
+                                    <select id="eval-audience" class="form-control">
+                                        <option value="customer">Customer</option>
+                                        <option value="investor">Investor</option>
+                                        <option value="tenant">Tenant</option>
+                                        <option value="partner">Partner</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary" id="evaluate-msg-btn"><i class="fas fa-star"></i> Evaluate</button>
+                            </div>
+                            <div id="eval-result" class="eval-result mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ APPROVALS ============ -->
+            <section class="page hidden" id="page-approvals">
+                <div class="page-header">
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="refreshApprovals"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                </div>
+                <div class="approvals-grid" id="approvalsGrid"></div>
+                <div class="empty-state hidden" id="approvalsEmpty">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>No Pending Approvals</h3>
+                    <p>All campaigns have been reviewed.</p>
+                </div>
+            </section>
+
+            <!-- ============ AGENTS MONITOR ============ -->
+            <section class="page hidden" id="page-agents">
+                <div class="page-header">
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="refreshAgentsBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid" id="agentHeartbeats"></div>
+
+                <div class="card mt-4">
+                    <div class="card-header"><h3>Recent Agent Runs</h3></div>
+                    <div class="table-container">
+                        <table class="data-table" id="agentRunsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Agent</th>
+                                    <th>Task</th>
+                                    <th>Status</th>
+                                    <th>Started</th>
+                                    <th>Duration</th>
+                                    <th>Error</th>
+                                </tr>
+                            </thead>
+                            <tbody id="agentRunsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ REPORTS ============ -->
+            <section class="page hidden" id="page-reports">
+                <div class="page-header">
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="refreshReports"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <button class="btn btn-secondary" id="exportReportsCSV"><i class="fas fa-download"></i> Export CSV</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="reportsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Campaign</th>
+                                <th>Target Audience</th>
+                                <th>Total Sent</th>
+                                <th>Successful</th>
+                                <th>Failed</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="empty-state hidden" id="reportsEmpty">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>No Reports Yet</h3>
+                    <p>Campaign reports will appear here after execution.</p>
+                </div>
+            </section>
+
+            <!-- ============ AUDIT LOG ============ -->
+            <section class="page hidden" id="page-audit">
+                <div class="page-header">
+                    <div class="header-actions">
+                        <select id="auditEntityFilter" class="form-control">
+                            <option value="">All Entities</option>
+                            <option value="client">Client</option>
+                            <option value="campaign">Campaign</option>
+                        </select>
+                        <button class="btn btn-primary" id="refreshAudit"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="auditTable">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Entity</th>
+                                <th>Entity ID</th>
+                                <th>Action</th>
+                                <th>Actor</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ============ SETTINGS ============ -->
+            <section class="page hidden" id="page-settings">
+                <div class="settings-grid">
+                    <div class="card">
+                        <div class="card-header"><h3>API Configuration</h3></div>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label>API Base URL</label>
+                                <input type="url" id="apiBaseUrl" class="form-control" value="">
+                                <small>The URL of your Marketing Campaign Agent API</small>
+                            </div>
+                            <div class="form-group">
+                                <label>API Key (optional)</label>
+                                <input type="password" id="apiKey" class="form-control" placeholder="Enter API key">
+                            </div>
+                            <button class="btn btn-primary" id="saveApiSettings"><i class="fas fa-save"></i> Save Settings</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3>System Information</h3><button class="btn btn-sm" id="refreshSysInfo"><i class="fas fa-sync-alt"></i></button></div>
+                        <div class="system-info" id="systemInfo"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3>Health Checks</h3><button class="btn btn-sm" id="refreshReadiness"><i class="fas fa-sync-alt"></i></button></div>
+                        <div id="readinessInfo" class="system-info"></div>
+                    </div>
+                </div>
+            </section>
+
+        </div><!-- /page-content -->
+    </main>
+
+    <!-- ============ MODALS ============ -->
+
+    <!-- Client Add/Edit Modal -->
+    <div class="modal" id="clientModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="clientModalTitle">Add Client</h3>
+                <button class="modal-close" id="closeClientModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="clientForm">
+                    <input type="hidden" name="id" id="clientId">
+                    <div class="form-row">
+                        <div class="form-group"><label>Name *</label><input type="text" name="name" class="form-control" required></div>
+                        <div class="form-group"><label>First Name</label><input type="text" name="first_name" class="form-control"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>WhatsApp Number</label><input type="text" name="whatsapp_number" class="form-control" placeholder="+971..."></div>
+                        <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Phone</label><input type="text" name="phone" class="form-control"></div>
+                        <div class="form-group"><label>Company</label><input type="text" name="company" class="form-control"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Audience Type</label>
+                            <select name="audience_type" class="form-control">
+                                <option value="customer">Customer</option>
+                                <option value="investor">Investor</option>
+                                <option value="tenant">Tenant</option>
+                                <option value="partner">Partner</option>
+                                <option value="lead">Lead</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Territory</label><input type="text" name="territory" class="form-control" placeholder="e.g. Dubai, Abu Dhabi"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Tags</label><input type="text" name="tags" class="form-control" placeholder="Comma-separated"></div>
+                        <div class="form-group"><label>Lead Name</label><input type="text" name="lead_name" class="form-control"></div>
+                    </div>
+                    <div class="form-group"><label>Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelClientModal">Cancel</button>
+                <button class="btn btn-primary" id="saveClientBtn">Save Client</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Add/Edit Modal -->
+    <div class="modal" id="campaignModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="campaignModalTitle">New Campaign</h3>
+                <button class="modal-close" id="closeCampaignModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="campaignForm">
+                    <input type="hidden" name="id" id="campaignId">
+                    <div class="form-row">
+                        <div class="form-group"><label>Campaign Name *</label><input type="text" name="campaign_name" class="form-control" required></div>
+                        <div class="form-group"><label>Campaign Topic</label><input type="text" name="campaign_topic" class="form-control"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Target Audience</label>
+                            <select name="target_audience" class="form-control">
+                                <option value="customer">Customer</option>
+                                <option value="investor">Investor</option>
+                                <option value="tenant">Tenant</option>
+                                <option value="partner">Partner</option>
+                                <option value="all">All</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Approval Method</label>
+                            <select name="approval_method" class="form-control">
+                                <option value="email">Email</option>
+                                <option value="dashboard">Dashboard</option>
+                                <option value="auto">Auto-Approve</option>
+                                <option value="none">None</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Message Draft</label><textarea name="message_draft" class="form-control" rows="4" placeholder="WhatsApp message content..."></textarea></div>
+                    <div class="form-group"><label>Google Drive Image URL</label><input type="url" name="google_drive_image_url" class="form-control" placeholder="https://drive.google.com/..."></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Start Date</label><input type="date" name="start_date" class="form-control"></div>
+                        <div class="form-group"><label>End Date</label><input type="date" name="end_date" class="form-control"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Scheduled Time</label><input type="datetime-local" name="scheduled_time" class="form-control"></div>
+                        <div class="form-group">
+                            <label>Recurrence</label>
+                            <select name="recurrence" class="form-control">
+                                <option value="once">Once</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Priority</label>
+                            <select name="priority" class="form-control">
+                                <option value="0">Normal</option>
+                                <option value="1">High</option>
+                                <option value="2">Urgent</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Tags</label><input type="text" name="tags" class="form-control" placeholder="Comma-separated"></div>
+                    </div>
+                    <div class="form-group"><label>Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelCampaignModal">Cancel</button>
+                <button class="btn btn-primary" id="saveCampaignBtn">Save Campaign</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Excel Import Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3 id="importModalTitle">Import Excel</h3>
+                <button class="modal-close" id="closeImportModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted">Upload an .xlsx file to import data.</p>
+                <div class="form-group">
+                    <input type="file" id="importFile" accept=".xlsx,.xls" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelImportModal">Cancel</button>
+                <button class="btn btn-primary" id="submitImport"><i class="fas fa-upload"></i> Import</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Confirm Action</h3>
+                <button class="modal-close" id="closeConfirmModal">&times;</button>
+            </div>
+            <div class="modal-body"><p id="confirmMessage">Are you sure?</p></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelConfirm">Cancel</button>
+                <button class="btn btn-danger" id="confirmAction">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Target Campaign Modal -->
+    <div class="modal" id="targetModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3>Set Campaign Targets</h3>
+                <button class="modal-close" id="closeTargetModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="targetCampaignId">
+                <div class="form-group">
+                    <label>Target by Audience Type</label>
+                    <select id="targetAudienceType" class="form-control">
+                        <option value="customer">Customer</option>
+                        <option value="investor">Investor</option>
+                        <option value="tenant">Tenant</option>
+                        <option value="partner">Partner</option>
+                        <option value="all">All Clients</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelTargetModal">Cancel</button>
+                <button class="btn btn-primary" id="submitTargets"><i class="fas fa-bullseye"></i> Set Targets</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <!-- Hidden file input for Excel imports -->
+    <input type="file" id="hiddenExcelInput" accept=".xlsx,.xls" style="display:none">
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/clients.js"></script>
+    <script src="js/campaigns.js"></script>
+    <script src="js/workflow.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/approvals.js"></script>
+    <script src="js/agents.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/audit.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
