@@ -18,7 +18,7 @@ const Campaigns = {
         on(pg, 'click', '.tab-btn', (e, btn) => {
             pg.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
-            this.statusFilter = btn.dataset.status || '';
+            this.statusFilter = btn.dataset.filter || '';
             this.page = 1;
             this.loadCampaigns();
         });
@@ -60,14 +60,14 @@ const Campaigns = {
             this.data = Array.isArray(result) ? result : (result.campaigns || []);
             this.renderTable();
             const total = result.total || this.data.length;
-            buildPagination($('#campaigns-pagination'), this.page, Math.ceil(total / this.perPage), p => { this.page = p; this.loadCampaigns(); });
+            buildPagination($('#campaignsPagination'), this.page, Math.ceil(total / this.perPage), p => { this.page = p; this.loadCampaigns(); });
         } catch (e) {
             showToast('Failed to load campaigns: ' + e.message, 'error');
         }
     },
 
     renderTable() {
-        const tbody = $('#campaigns-table-body');
+        const tbody = $('#campaignsTableBody');
         if (!tbody) return;
         if (!this.data.length) {
             tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-bullhorn"></i><p>No campaigns found</p></td></tr>';

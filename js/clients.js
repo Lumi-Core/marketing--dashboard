@@ -16,11 +16,11 @@ const Clients = {
         if (!pg) return;
 
         // Search
-        const searchInput = pg.querySelector('.search-input');
+        const searchInput = $('#clientSearch');
         if (searchInput) searchInput.addEventListener('input', debounce(e => { this.search = e.target.value; this.page = 1; this.loadClients(); }, 400));
 
         // Audience filter
-        const audFilter = pg.querySelector('.filter-select');
+        const audFilter = $('#clientAudienceFilter');
         if (audFilter) audFilter.addEventListener('change', e => { this.audienceFilter = e.target.value; this.page = 1; this.loadClients(); });
 
         // Add client btn
@@ -39,7 +39,7 @@ const Clients = {
         if (saveBtn) saveBtn.addEventListener('click', () => this.saveClient());
 
         // Import modal confirm
-        const importBtn = $('#importConfirmBtn');
+        const importBtn = $('#submitImport');
         if (importBtn) importBtn.addEventListener('click', () => this.importClients());
     },
 
@@ -56,14 +56,14 @@ const Clients = {
             this.data = Array.isArray(result) ? result : (result.clients || []);
             this.renderTable();
             const total = result.total || this.data.length;
-            buildPagination($('#clients-pagination'), this.page, Math.ceil(total / this.perPage), p => { this.page = p; this.loadClients(); });
+            buildPagination($('#clientsPagination'), this.page, Math.ceil(total / this.perPage), p => { this.page = p; this.loadClients(); });
         } catch (e) {
             showToast('Failed to load clients: ' + e.message, 'error');
         }
     },
 
     renderTable() {
-        const tbody = $('#clients-table-body');
+        const tbody = $('#clientsTableBody');
         if (!tbody) return;
         if (!this.data.length) {
             tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-users"></i><p>No clients found</p></td></tr>';
