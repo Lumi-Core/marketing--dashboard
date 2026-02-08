@@ -54,19 +54,39 @@
 
 /* Reset & Base */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 14px; scroll-behavior: smooth; }
+html { 
+    font-size: 14px; 
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%; /* Prevent font scaling in landscape */
+}
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--gray-100);
     color: var(--gray-800);
     line-height: 1.6;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 a { text-decoration: none; color: inherit; }
 ul, ol { list-style: none; }
 img { max-width: 100%; height: auto; }
-button { cursor: pointer; font-family: inherit; }
-input, select, textarea { font-family: inherit; }
+button { 
+    cursor: pointer; 
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+}
+input, select, textarea { 
+    font-family: inherit;
+    -webkit-appearance: none; /* Remove default iOS styling */
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Touch-friendly scrolling */
+* {
+    -webkit-overflow-scrolling: touch;
+}
 
 /* ── Sidebar ─────────────────────────────────────────── */
 .sidebar {
@@ -850,26 +870,169 @@ textarea.form-control { resize: vertical; }
 }
 
 @media (max-width: 768px) {
-    .sidebar { transform: translateX(-100%); width: var(--sidebar-width); }
+    /* Sidebar & Navigation */
+    .sidebar { 
+        transform: translateX(-100%); 
+        width: var(--sidebar-width); 
+        z-index: 1000;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+    }
     .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay { display: none; }
+    .sidebar.open ~ .sidebar-overlay { display: block; }
     .main-content { margin-left: 0; }
     .sidebar.collapsed ~ .main-content { margin-left: 0; }
     .mobile-menu-btn { display: block; }
+    
+    /* Header */
     .search-box { display: none; }
-    .top-header { padding: 0 16px; }
-    .page-content { padding: 16px; }
+    .top-header { padding: 0 12px; height: 56px; }
+    .header-left h1 { font-size: 1.1rem; }
+    .breadcrumb { display: none; }
+    .header-right { gap: 8px; }
+    .user-menu { display: none; }
+    
+    /* Content */
+    .page-content { padding: 12px; }
+    .page-header { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 12px; 
+    }
+    .header-actions { 
+        width: 100%; 
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .header-actions .btn { 
+        flex: 1 1 calc(50% - 4px); 
+        min-width: 0;
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+    
+    /* Grids & Layouts */
     .form-row { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
     .settings-grid { grid-template-columns: 1fr; }
     .approvals-grid { grid-template-columns: 1fr; }
-    .filter-bar { flex-direction: column; }
-    .filter-bar .form-control { width: 100%; min-width: 0; }
+    .recent-grid { grid-template-columns: 1fr; }
+    
+    /* Filter Bar */
+    .filter-bar { 
+        flex-direction: column; 
+        gap: 10px;
+        align-items: stretch;
+    }
+    .filter-bar .form-control { 
+        width: 100%; 
+        min-width: 0; 
+    }
+    
+    /* Cards */
+    .card { 
+        margin-bottom: 12px; 
+        border-radius: 8px;
+    }
+    .card-header { 
+        padding: 12px 16px; 
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .card-body { padding: 12px 16px; }
+    
+    /* Modals */
+    .modal-content { 
+        width: 95vw; 
+        max-width: 95vw;
+        max-height: 90vh;
+        margin: 20px auto;
+        border-radius: 12px;
+    }
+    .modal-lg, .modal-sm { max-width: 95vw; }
+    .modal-header { padding: 16px; }
+    .modal-body { padding: 16px; max-height: calc(90vh - 140px); }
+    .modal-footer { 
+        padding: 12px 16px; 
+        flex-direction: column;
+        gap: 8px;
+    }
+    .modal-footer .btn { width: 100%; margin: 0; }
+    
+    /* Tables - Switch to card layout on mobile */
+    .table-container { 
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .data-table { 
+        font-size: 0.85rem; 
+        min-width: 600px;
+    }
+    .data-table th, 
+    .data-table td { 
+        padding: 8px; 
+        white-space: nowrap;
+    }
+    
+    /* Forms */
+    .form-control, 
+    .form-select, 
+    textarea { 
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 12px;
+    }
+    .form-group label { font-size: 0.9rem; }
+    
+    /* Buttons - Larger touch targets */
+    .btn { 
+        min-height: 44px; /* iOS recommended touch target */
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+    .btn-sm { 
+        min-height: 36px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+    
+    /* Toast notifications */
+    .toast { 
+        width: calc(100vw - 32px);
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+    }
+    
+    /* Status badges */
+    .status-badge { 
+        font-size: 0.75rem; 
+        padding: 4px 8px;
+    }
 }
 
 @media (max-width: 480px) {
+    /* Extra small screens */
     .stats-grid { grid-template-columns: 1fr; }
-    .header-actions { width: 100%; }
-    .header-actions .btn { flex: 1; justify-content: center; }
+    .stat-card { padding: 14px; }
+    .stat-icon { width: 36px; height: 36px; font-size: 1.1rem; }
+    .stat-value { font-size: 1.6rem; }
+    
+    .header-actions .btn { 
+        flex: 1 1 100%; 
+        width: 100%;
+    }
+    
+    .page-header h2 { font-size: 1.3rem; }
+    
+    /* Compact table on very small screens */
+    .data-table { font-size: 0.8rem; }
+    
+    /* Single column forms */
+    .form-row.form-row-2 { grid-template-columns: 1fr; }
+    
+    /* Company selector full width */
+    .company-selector { max-width: 100%; }
 }
 
 /* ── Scrollbar ───────────────────────────────────────── */

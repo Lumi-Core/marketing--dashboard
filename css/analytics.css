@@ -207,6 +207,51 @@
 
 @media (max-width: 768px) {
     .recommendations-list { grid-template-columns: 1fr; }
+    
+    /* Analytics Dashboard Mobile */
+    .analytics-summary { 
+        grid-template-columns: 1fr; 
+        gap: 12px;
+        padding: 12px;
+    }
+    .summary-card { padding: 14px; }
+    .summary-value { font-size: 1.8rem; }
+    
+    /* Charts */
+    .charts-grid { 
+        grid-template-columns: 1fr; 
+        gap: 12px;
+    }
+    .chart-card { 
+        padding: 16px; 
+        margin-bottom: 12px;
+    }
+    
+    /* Recommendations */
+    .recommendation-card { 
+        padding: 14px; 
+        margin-bottom: 12px;
+    }
+    .rec-header { 
+        flex-direction: column; 
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .rec-priority { margin-bottom: 8px; }
+    
+    /* Performance metrics */
+    .perf-stats-grid { 
+        grid-template-columns: 1fr; 
+        gap: 10px;
+    }
+    .metric-card { padding: 12px; }
+    
+    /* Insights */
+    .insights-grid { 
+        grid-template-columns: 1fr; 
+        gap: 12px;
+    }
+    .insight-card { padding: 14px; }
 }
 /* ── Performance Summary ────────────────────────────── */
 .performance-summary { padding: 20px; }
