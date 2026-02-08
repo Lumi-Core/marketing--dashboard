@@ -338,7 +338,7 @@
             <section class="page hidden" id="page-analytics">
                 <div class="page-header">
                     <div class="header-actions analytics-header-controls">
-                        <button class="btn btn-primary" id="refreshAnalytics"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <button class="btn btn-primary" id="refreshAnalytics"><i class="fas fa-sync-alt"></i> Refresh All</button>
                     </div>
                 </div>
 
@@ -346,13 +346,12 @@
                 <div class="analytics-section">
                     <div class="analytics-section-header">
                         <div>
-                            <div class="analytics-section-title"><i class="fas fa-tachometer-alt"></i> Key Performance Indicators</div>
-                            <div class="analytics-section-subtitle">Real-time metrics and growth indicators</div>
+                            <div class="analytics-section-title"><i class="fas fa-tachometer-alt"></i> Performance Overview</div>
+                            <div class="analytics-section-subtitle">Real-time metrics and key indicators</div>
                         </div>
-                        <button class="btn btn-secondary btn-sm btn-refresh-kpis"><i class="fas fa-sync-alt"></i></button>
                     </div>
-                    <div id="kpi-cards-grid" class="kpi-cards-grid">
-                        <p class="text-muted">Loading KPIs...</p>
+                    <div id="kpiCardsGrid" class="kpi-cards-grid">
+                        <p class="text-muted">Loading metrics...</p>
                     </div>
                 </div>
 
@@ -363,91 +362,44 @@
                             <div class="analytics-section-title"><i class="fas fa-chess-queen"></i> Strategic Recommendations</div>
                             <div class="analytics-section-subtitle">Priority insights for decision making</div>
                         </div>
-                        <button class="btn btn-secondary btn-sm btn-refresh-strategic"><i class="fas fa-sync-alt"></i></button>
                     </div>
                     <div class="card">
-                        <div id="strategic-insights-content" class="strategic-insights-content">
-                            <p class="text-muted">Loading strategic insights...</p>
+                        <div id="strategicInsightsContent" class="strategic-insights-content">
+                            <p class="text-muted">Loading insights...</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Engagement Breakdown -->
+                <!-- Engagement & Performance -->
                 <div class="analytics-section">
                     <div class="analytics-section-header">
                         <div>
-                            <div class="analytics-section-title"><i class="fas fa-chart-pie"></i> Engagement Breakdown</div>
-                            <div class="analytics-section-subtitle">Detailed interaction patterns and conversion metrics</div>
+                            <div class="analytics-section-title"><i class="fas fa-chart-pie"></i> Engagement & Performance</div>
+                            <div class="analytics-section-subtitle">Detailed campaign analytics and audience patterns</div>
                         </div>
-                        <button class="btn btn-secondary btn-sm btn-refresh-engagement"><i class="fas fa-sync-alt"></i></button>
                     </div>
                     <div class="card">
-                        <div id="engagement-breakdown-content" class="engagement-breakdown-content">
+                        <div id="engagementBreakdownContent" class="engagement-breakdown-content">
                             <p class="text-muted">Loading engagement data...</p>
                         </div>
                     </div>
                 </div>
 
+                <!-- Campaign Statistics -->
                 <div class="analytics-section">
                     <div class="analytics-section-header">
                         <div>
-                            <div class="analytics-section-title"><i class="fas fa-brain"></i> AI Performance Overview</div>
-                            <div class="analytics-section-subtitle">GPT-4o analysis of your campaign performance</div>
+                            <div class="analytics-section-title"><i class="fas fa-chart-line"></i> Campaign Statistics</div>
+                            <div class="analytics-section-subtitle">Comprehensive delivery and success metrics</div>
                         </div>
-                        <button class="btn btn-secondary btn-sm btn-refresh-overview"><i class="fas fa-sync-alt"></i></button>
                     </div>
-                    <div class="card"><div id="analytics-overview-content" class="ai-overview-content"><p class="text-muted">Loading AI insights...</p></div></div>
-                </div>
-
-                <div class="analytics-section">
-                    <div class="analytics-section-header">
-                        <div>
-                            <div class="analytics-section-title"><i class="fas fa-chart-line"></i> Performance Summary</div>
-                            <div class="analytics-section-subtitle">Comprehensive campaign and delivery statistics</div>
+                    <div class="card">
+                        <div id="performanceSummaryContent">
+                            <p class="text-muted">Loading statistics...</p>
                         </div>
-                        <button class="btn btn-secondary btn-sm btn-refresh-performance"><i class="fas fa-sync-alt"></i></button>
                     </div>
-                    <div class="card"><div id="performance-summary-content"><p class="text-muted">Loading performance data...</p></div></div>
                 </div>
-
-                <div class="analytics-section">
-                    <div class="analytics-section-header">
-                        <div>
-                            <div class="analytics-section-title"><i class="fas fa-lightbulb"></i> AI Recommendations</div>
-                            <div class="analytics-section-subtitle">Data-driven suggestions to improve campaigns</div>
-                        </div>
-                        <button class="btn btn-secondary btn-sm btn-refresh-recs"><i class="fas fa-sync-alt"></i></button>
-                    </div>
-                    <div class="card"><div id="recommendations-content" class="recommendations-grid"></div></div>
-                </div>
-
-                <div class="analytics-section">
-                    <div class="analytics-section-header">
-                        <div>
-                            <div class="analytics-section-title"><i class="fas fa-users"></i> Audience Insights</div>
-                            <div class="analytics-section-subtitle">Distribution and performance by audience segment</div>
-                        </div>
-                        <button class="btn btn-secondary btn-sm btn-refresh-audience"><i class="fas fa-sync-alt"></i></button>
-                    </div>
-                    <div class="card"><div id="audience-insights-content"><p class="text-muted">Loading audience insights...</p></div></div>
-                </div>
-
-                <div class="analytics-section">
-                    <div class="analytics-section-header">
-                        <div>
-                            <div class="analytics-section-title"><i class="fas fa-history"></i> Recent Activity</div>
-                            <div class="analytics-section-subtitle">Timeline of campaign and agent operations</div>
-                        </div>
-                        <button class="btn btn-secondary btn-sm btn-refresh-activity"><i class="fas fa-sync-alt"></i></button>
-                    </div>
-                    <div class="card"><div id="recent-activity-content"><p class="text-muted">Loading recent activity...</p></div></div>
-                </div>
-
-                <div class="analytics-section">
-                    <div class="analytics-section-header">
-                        <div>
-                            <div class="analytics-section-title"><i class="fas fa-clock"></i> Best Send Time</div>
-                            <div class="analytics-section-subtitle">Optimal WhatsApp delivery window for UAE market</div>
+            </section>
                         </div>
                     </div>
                     <div class="card">

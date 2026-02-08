@@ -8,46 +8,15 @@ const Analytics = {
     bindEvents() {
         const pg = $('#page-analytics');
         if (!pg) return;
-
         on(pg, 'click', '#refreshAnalytics', () => this.onPageActive());
-        on(pg, 'click', '#evaluate-msg-btn', () => this.evaluateMessage());
-        on(pg, 'click', '#best-time-btn', () => this.loadBestTime());
-        on(pg, 'click', '.btn-refresh-overview', () => this.loadOverview());
-        on(pg, 'click', '.btn-refresh-recs', () => this.loadRecommendations());
-        on(pg, 'click', '.btn-refresh-performance', () => this.loadPerformanceSummary());
-        on(pg, 'click', '.btn-refresh-audience', () => this.loadAudienceInsights());
-        on(pg, 'click', '.btn-refresh-activity', () => this.loadRecentActivity());
-        on(pg, 'click', '.btn-refresh-kpis', () => this.loadKPIs());
-        on(pg, 'click', '.btn-refresh-engagement', () => this.loadEngagementBreakdown());
-        on(pg, 'click', '.btn-refresh-strategic', () => this.loadStrategicInsights());
-        on(pg, 'click', '.btn-apply-rec', e => this.applyRecommendation(e.target.closest('.btn-apply-rec').dataset.id));
     },
 
     onPageActive() {
         this.loadKPIs();
         this.loadStrategicInsights();
         this.loadEngagementBreakdown();
-        this.loadOverview();
-        this.loadRecommendations();
         this.loadPerformanceSummary();
-        this.loadAudienceInsights();
-        this.loadRecentActivity();
     },
-
-    /* ── Overview ──────────────────────────────── */
-    async loadOverview() {
-        const container = $('#analytics-overview-content');
-        if (!container) return;
-        try {
-            container.innerHTML = '<div class="loading-text">Analysing campaigns…</div>';
-            const result = await api.getAnalyticsOverview();
-            this.renderOverview(container, result);
-        } catch (e) {
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-chart-line"></i><p>${escapeHtml(e.message)}</p></div>`;
-        }
-    },
-
-    renderOverview(container, data) {
         if (!data) { container.innerHTML = '<p>No data</p>'; return; }
         const summary = data.summary || data;
         const highlights = data.highlights || [];
@@ -202,10 +171,10 @@ const Analytics = {
 
     /* ── Performance Summary ──────────────────── */
     async loadPerformanceSummary(days = 30) {
-        const container = $('#performance-summary-content');
+        const container = $('#performanceSummaryContent');
         if (!container) return;
         try {
-            container.innerHTML = '<div class="loading-text">Loading performance data…</div>';
+            container.innerHTML = '<div class="loading-text">Loading statistics...</div>';
             const result = await api.getPerformanceSummary(days);
             this.renderPerformanceSummary(container, result);
         } catch (e) {
@@ -367,10 +336,10 @@ const Analytics = {
 
     /* ── Key Performance Indicators ───────────── */
     async loadKPIs(days = 30) {
-        const container = $('#kpi-cards-grid');
+        const container = $('#kpiCardsGrid');
         if (!container) return;
         try {
-            container.innerHTML = '<div class="loading-text">Loading KPIs...</div>';
+            container.innerHTML = '<div class="loading-text">Loading metrics...</div>';
             const result = await api.getKPIs(days);
             this.renderKPIs(container, result);
         } catch (e) {
@@ -459,10 +428,10 @@ const Analytics = {
 
     /* ── Engagement Breakdown ──────────────────── */
     async loadEngagementBreakdown(days = 30) {
-        const container = $('#engagement-breakdown-content');
+        const container = $('#engagementBreakdownContent');
         if (!container) return;
         try {
-            container.innerHTML = '<div class="loading-text">Analyzing engagement patterns...</div>';
+            container.innerHTML = '<div class="loading-text">Loading engagement data...</div>';
             const result = await api.getEngagementBreakdown(days);
             this.renderEngagementBreakdown(container, result);
         } catch (e) {
@@ -547,10 +516,10 @@ const Analytics = {
 
     /* ── Strategic Insights ────────────────────── */
     async loadStrategicInsights(days = 30, limit = 10) {
-        const container = $('#strategic-insights-content');
+        const container = $('#strategicInsightsContent');
         if (!container) return;
         try {
-            container.innerHTML = '<div class="loading-text">Generating strategic insights...</div>';
+            container.innerHTML = '<div class="loading-text">Generating insights...</div>';
             const result = await api.getStrategicInsights(days, limit);
             this.renderStrategicInsights(container, result);
         } catch (e) {
