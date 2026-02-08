@@ -1,0 +1,202 @@
+/* ============================================
+   Analytics Insights Tools - Additional Styles
+   Message Evaluator & Best Send Time
+   ============================================ */
+
+.message-evaluator,
+.best-time-tool {
+    padding: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    margin-top: 16px;
+}
+.form-row .form-group {
+    flex: 1;
+}
+
+/* ── Evaluation Results ────────────────────────────── */
+.eval-results {
+    background: var(--gray-50);
+    border-radius: var(--border-radius);
+    padding: 20px;
+}
+.eval-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.eval-score-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.eval-score-label {
+    min-width: 140px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+.eval-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.eval-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+.eval-bar-fill.good { background: var(--success); }
+.eval-bar-fill.ok { background: var(--warning); }
+.eval-bar-fill.poor { background: var(--danger); }
+.eval-score-value {
+    min-width: 50px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--gray-700);
+}
+.eval-feedback {
+    background: var(--white);
+    border-left: 3px solid var(--info);
+    padding: 16px;
+    border-radius: var(--border-radius);
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--gray-700);
+}
+.eval-feedback i {
+    color: var(--info);
+    margin-right: 8px;
+}
+.eval-suggestions {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 16px;
+}
+.eval-suggestions h5 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.eval-suggestions h5 i {
+    color: var(--primary);
+}
+.eval-suggestions ul {
+    list-style: none;
+    padding: 0;
+}
+.eval-suggestions li {
+    padding: 6px 0;
+    padding-left: 20px;
+    position: relative;
+    color: var(--gray-700);
+    font-size: 0.9rem;
+}
+.eval-suggestions li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* ── Best Send Time ────────────────────────────────── */
+.best-time-card {
+    background: var(--gray-50);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-top: 16px;
+}
+.best-time-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.best-time-value i {
+    font-size: 2rem;
+}
+.best-time-detail {
+    padding: 8px 0;
+    font-size: 0.95rem;
+    color: var(--gray-700);
+}
+.best-time-detail strong {
+    color: var(--gray-800);
+    margin-right: 8px;
+}
+.best-time-reasoning {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-200);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--gray-600);
+}
+.best-time-reasoning i {
+    color: var(--primary);
+    margin-right: 8px;
+}
+
+/* ── Recommendations Additional ────────────────────── */
+.recommendations-grid {
+    padding: 20px;
+}
+.recommendation-card h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 8px;
+}
+.recommendation-card p {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--gray-700);
+    margin-bottom: 12px;
+}
+.rec-category.badge-timing   { background: #dbeafe; color: #2563eb; }
+.rec-category.badge-audience  { background: #dcfce7; color: #16a34a; }
+.rec-category.badge-content   { background: #fef3c7; color: #d97706; }
+.rec-category.badge-frequency { background: #ede9fe; color: #7c3aed; }
+.rec-category.badge-targeting { background: #fce7f3; color: #db2777; }
+.rec-category.badge-general   { background: var(--gray-100); color: var(--gray-600); }
+
+.recommendation-card.impact-high { border-left-color: var(--danger); }
+.recommendation-card.impact-medium { border-left-color: var(--warning); }
+.recommendation-card.impact-low { border-left-color: var(--success); }
+
+.confidence-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+.confidence-fill {
+    flex: 1;
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.confidence-bar span {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--gray-500);
+    min-width: 40px;
+}
