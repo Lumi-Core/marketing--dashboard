@@ -9,13 +9,15 @@ const Dashboard = {
     },
 
     bindEvents() {
-        on($('#page-dashboard'), 'click', '.quick-action-btn', (e, btn) => {
-            const action = btn.dataset.action;
-            if (action === 'new-campaign') App.navigateTo('campaigns');
-            else if (action === 'trigger-campaign') App.navigateTo('workflow');
-            else if (action === 'view-analytics') App.navigateTo('analytics');
-            else if (action === 'manage-clients') App.navigateTo('clients');
-        });
+        // Quick action buttons
+        const pgDash = $('#page-dashboard');
+        if (pgDash) {
+            on(pgDash, 'click', '#qaTriggerCampaign', () => App.navigateTo('workflow'));
+            on(pgDash, 'click', '#qaAddClient', () => App.navigateTo('clients'));
+            on(pgDash, 'click', '#qaNewCampaign', () => App.navigateTo('campaigns'));
+            on(pgDash, 'click', '#qaViewApprovals', () => App.navigateTo('approvals'));
+            on(pgDash, 'click', '#refreshHealthBtn', () => this.loadAll());
+        }
     },
 
     onPageActive() {
@@ -45,29 +47,25 @@ const Dashboard = {
     },
 
     renderStats(data) {
-        const grid = $('#dashboard-stats');
-        if (!grid) return;
-        const stats = [
-            { label: 'Total Clients', value: formatNumber(data.total_active_clients ?? data.total_clients ?? 0), icon: 'users', cls: 'primary' },
-            { label: 'Active Campaigns', value: formatNumber(data.active_campaigns ?? 0), icon: 'bullhorn', cls: 'success' },
-            { label: 'Pending Approval', value: formatNumber(data.pending_approvals ?? 0), icon: 'clock', cls: 'warning' },
-            { label: 'Messages Sent', value: formatNumber(data.total_sent ?? data.messages_sent ?? 0), icon: 'paper-plane', cls: 'info' },
-        ];
-        grid.innerHTML = stats.map(s => `
-            <div class="stat-card">
-                <div class="stat-icon ${s.cls}"><i class="fas fa-${s.icon}"></i></div>
-                <div class="stat-info"><div class="stat-value">${s.value}</div><div class="stat-label">${s.label}</div></div>
-            </div>
-        `).join('');
+        // Update individual stat cards
+        const clientsStat = $('#stat-clients');
+        const campaignsStat = $('#stat-campaigns');
+        const pendingStat = $('#stat-pending');
+        const runningStat = $('#stat-running');
+        
+        if (clientsStat) clientsStat.textContent = formatNumber(data.total_active_clients ?? data.total_clients ?? 0);
+        if (campaignsStat) campaignsStat.textContent = formatNumber(data.total_campaigns ?? 0);
+        if (pendingStat) pendingStat.textContent = formatNumber(data.pending_approvals ?? 0);
+        if (runningStat) runningStat.textContent = formatNumber(data.running_workflows ?? 0);
     },
 
     renderHealth(health) {
-        const grid = $('#health-grid');
+        const grid = $('#healthGrid');
         if (!grid) return;
         const checks = health.checks || health;
         if (typeof checks !== 'object') return;
         grid.innerHTML = Object.entries(checks).map(([k, v]) => {
-            const ok = v === true || v === 'ok' || (v && v.status === 'ok');
+            const ok = v === true || v === 'ok' || v === 'connected' || (v && v.status === 'ok');
             return `<div class="health-item">
                 <i class="fas fa-${ok ? 'check-circle' : 'times-circle'}" style="color:${ok ? 'var(--success)' : 'var(--danger)'}"></i>
                 <span>${capitalize(k.replace(/_/g, ' '))}</span>
@@ -87,33 +85,45 @@ const Dashboard = {
     },
 
     renderRecentCampaigns(campaigns) {
-        const tbody = $('#recent-campaigns-body');
-        if (!tbody) return;
-        if (!campaigns.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="fas fa-inbox"></i><p>No recent campaigns</p></td></tr>'; return; }
-        tbody.innerHTML = campaigns.slice(0, 8).map(c => `<tr>
-            <td><strong>${escapeHtml(c.campaign_name || c.name)}</strong></td>
-            <td>${statusBadge(c.status)}</td>
-            <td>${escapeHtml(c.audience_type || '—')}</td>
-            <td>${formatDate(c.scheduled_time || c.created_at)}</td>
-            <td><button class="btn btn-sm" onclick="App.navigateTo('campaigns')">View</button></td>
-        </tr>`).join('');
+        const container = $('#recentCampaigns');
+        if (!container) return;
+        if (!campaigns.length) { 
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>No recent campaigns</p></div>'; 
+            return; 
+        }
+        container.innerHTML = campaigns.slice(0, 5).map(c => `
+            <div class="recent-item">
+                <div class="recent-icon"><i class="fas fa-bullhorn"></i></div>
+                <div class="recent-info">
+                    <strong>${escapeHtml(c.campaign_name || c.name)}</strong>
+                    <small>${statusBadge(c.status)} • ${formatDate(c.scheduled_time || c.created_at)}</small>
+                </div>
+            </div>
+        `).join('');
     },
 
     async renderAgentStatus() {
-        const container = $('#agent-status-preview');
+        const container = $('#agentStatusPreview');
         if (!container) return;
         try {
             const status = await api.getAgentsStatus();
-            if (!status || !status.agents) { container.innerHTML = '<p class="text-muted">No agent data</p>'; return; }
+            if (!status || !status.agents) { 
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-robot"></i><p>No agent data</p></div>'; 
+                return; 
+            }
             container.innerHTML = Object.entries(status.agents).map(([name, info]) => {
                 const online = info.status === 'online';
-                return `<div class="agent-pill ${online ? 'online' : 'offline'}">
-                    <i class="fas fa-${online ? 'signal' : 'plug'}"></i>
-                    <span>${escapeHtml(name)}</span>
-                    <small>${online ? timeAgo(info.last_seen) : 'offline'}</small>
+                return `<div class="recent-item ${online ? 'online' : 'offline'}">
+                    <div class="recent-icon"><i class="fas fa-${online ? 'robot' : 'plug'}"></i></div>
+                    <div class="recent-info">
+                        <strong>${escapeHtml(name)}</strong>
+                        <small>${online ? 'Online • ' + timeAgo(info.last_seen) : 'Offline'}</small>
+                    </div>
                 </div>`;
             }).join('');
-        } catch { container.innerHTML = '<p class="text-muted">Unable to reach agents API</p>'; }
+        } catch { 
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Unable to reach agents API</p></div>'; 
+        }
     },
 
     formatUptime(seconds) {

@@ -134,16 +134,20 @@ const App = {
     },
 
     async checkHealth() {
-        const indicator = $('#health-indicator');
+        const indicator = $('#healthIndicator');
         if (!indicator) return;
+        const dot = indicator.querySelector('.status-dot');
+        const text = indicator.querySelector('.status-text');
         try {
             const result = await api.getHealth();
             const ok = result && (result.status === 'healthy' || result.status === 'ok');
-            indicator.className = `health-dot ${ok ? 'online' : 'degraded'}`;
-            indicator.title = ok ? 'API Online' : 'API Degraded';
+            if (dot) dot.className = `status-dot ${ok ? 'online' : 'degraded'}`;
+            if (text) text.textContent = ok ? 'API Online' : 'API Degraded';
+            indicator.title = ok ? 'System Healthy' : 'System Degraded';
         } catch {
-            indicator.className = 'health-dot offline';
-            indicator.title = 'API Offline';
+            if (dot) dot.className = 'status-dot offline';
+            if (text) text.textContent = 'API Offline';
+            indicator.title = 'Cannot reach API';
         }
     }
 };
